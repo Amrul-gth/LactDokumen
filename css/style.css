@@ -1,0 +1,346 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Background Merah Premium ala Login Page */
+.app-bg {
+    background: linear-gradient(135deg, #2b0000 0%, #660000 50%, #1a0000 100%);
+}
+
+/* Glassmorphism Sidebar */
+.glass-sidebar {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* Animasi Fade In */
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar Khusus untuk Navigasi Angka Horizontal */
+.scroll-hide::-webkit-scrollbar {
+    height: 6px;
+}
+.scroll-hide::-webkit-scrollbar-track {
+    background: transparent; 
+}
+.scroll-hide::-webkit-scrollbar-thumb {
+    background: #cbd5e1; 
+    border-radius: 10px;
+}
+.scroll-hide::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; 
+}
+
+/* Logout Button Hover Transform */
+.logout-btn:hover span {
+    transform: translateX(-5px);
+}
+
+/* =========================================================
+   MODE SPLIT SCREEN UI (KIRI KECIL & KANAN BESAR)
+   ========================================================= */
+.split-mode-active {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 1.5rem !important;
+    height: 100% !important; 
+    overflow: hidden !important; 
+}
+
+/* Rasio Pembagian Layar: Form (±35%), Preview (±65%) untuk display yang lebih nyaman */
+.split-mode-active #form-tab {
+    flex: 0 0 35% !important; 
+    max-width: 35% !important;
+    height: 100% !important;
+    overflow-y: auto !important; 
+    display: block !important;
+    margin: 0 !important;
+    border-right: 2px solid #e5e7eb;
+}
+
+.split-mode-active #report-tab {
+    flex: 0 0 65% !important; 
+    max-width: 65% !important;
+    height: 100% !important;
+    overflow-y: auto !important; 
+    display: block !important;
+    margin: 0 !important;
+}
+
+/* Supaya layout preview paper tidak mengecil dan tetap menjaga ukurannya agar scroll horizontal muncul jika diperlukan */
+#print-area {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 20px;
+}
+
+/* Pengaturan Kertas Layar (A4) */
+.paper-a4 { 
+    width: 210mm !important; 
+    min-height: 297mm !important; 
+    padding: 15mm 20mm; 
+    box-sizing: border-box; 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    background: white;
+    position: relative;
+    border-radius: 4px;
+    flex-shrink: 0 !important; 
+}
+
+/* Ukuran Kertas Landscape di Layar */
+.paper-a4.landscape { 
+    width: 297mm !important; 
+    min-height: 210mm !important; 
+}
+
+/* Wrapper Khusus Untuk Tabel/Gambar Besar */
+.resize-wrapper {
+    overflow: hidden;
+    width: 100%; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1; 
+    min-height: 0; 
+    border: 2px dashed #cbd5e1; 
+    position: relative;
+    margin-bottom: 10px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+}
+.resize-wrapper:hover {
+    border-color: #ef4444; 
+}
+.resize-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+    object-position: center top;
+    display: block;
+}
+.resize-wrapper.has-image {
+    border: 1px solid transparent; 
+    background-color: transparent;
+}
+.resize-wrapper.has-image:hover {
+    border: 1px dashed #ef4444; 
+}
+
+/* =========================================================
+   STYLE PARAF DI POJOK KANAN BAWAH KERTAS (DIPERBESAR)
+   ========================================================= */
+.paraf-wrapper {
+    position: absolute;
+    bottom: 25mm;
+    right: 25mm;
+    width: 140px; 
+    height: 140px; 
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    z-index: 10;
+    pointer-events: none; 
+}
+.paraf-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply; 
+}
+
+/* Desain Tabel Grid Umum */
+.evidence-grid, .opm-grid, .opm-grid-3 {
+    width: 100% !important;
+}
+.evidence-grid, .opm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px; 
+    background-color: black;
+    border: 3px solid black;
+}
+.opm-grid { grid-template-rows: auto auto auto; }
+.opm-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 3px; 
+    background-color: black;
+    border: 3px solid black;
+}
+
+.evidence-item, .photo-item {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+.photo-item.empty-slot { min-height: 180px; }
+
+.evidence-img-wrapper, .ev-img-wrapper, .opm-img-wrapper {
+    height: 180px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: white;
+}
+.opm-img-wrapper { height: 170px; }
+
+.evidence-img-wrapper img, .ev-img-wrapper img, .opm-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+/* FITUR DRAG PAN & ZOOM PREVIEW FOTO */
+.draggable-preview {
+    cursor: grab;
+    transform-origin: center center;
+    user-select: none;
+    -webkit-user-drag: none; 
+}
+.draggable-preview:active { cursor: grabbing; }
+
+.evidence-caption, .photo-caption {
+    text-align: center;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 8px;
+    border-top: 2px solid black;
+    text-transform: uppercase;
+    background-color: white;
+    min-height: 32px; 
+}
+
+/* Navigasi Sticky Melayang di Halaman Preview */
+.sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: white;
+    padding: 10px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* =========================================================
+   PERBAIKAN EXPORT PDF / PRINT (100% FIXED & ANTI GEPENG)
+   ========================================================= */
+@page {
+    size: A4 portrait;
+    margin: 0; 
+}
+
+@page landscape_page { 
+    size: A4 landscape; 
+    margin: 0; 
+}
+
+@media print {
+    /* RESET SEMUA CONTAINER TINGKAT ATAS AGAR AUTO (TIDAK KUNCI LEBAR) */
+    body, html { 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        background: white !important; 
+        -webkit-print-color-adjust: exact !important; 
+        print-color-adjust: exact !important; 
+        display: block !important;
+        width: auto !important;  
+        height: auto !important;
+        overflow: visible !important;
+    }
+    
+    /* Sembunyikan UI Web (Sidebar, Navbar, Tombol) */
+    aside, #dashboard-tab, .no-print, .sticky-nav, #toast-container, header, #modal-tambah, #modal-export, #modal-warning, #modal-signature, #modal-reset { 
+        display: none !important; 
+    }
+
+    /* MATIKAN SECARA PAKSA SEMUA FLEXBOX & BATASAN LEBAR DARI MODE SPLIT SCREEN */
+    #main-workspace, 
+    #main-content-scroll, 
+    #main-content-scroll.split-mode-active, 
+    #report-tab, 
+    .split-mode-active #report-tab,
+    #print-area { 
+        display: block !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        width: auto !important;          /* <-- Ini Kunci agar Landscape bisa melar 297mm */
+        max-width: none !important;      /* <-- Ini Menghapus batasan 65% di mode split */
+        position: relative !important; 
+        height: auto !important;
+        overflow: visible !important;
+        flex: none !important;
+    }
+    
+    /* Pastikan Panel Kiri (Form) Disembunyikan Saat Print di Split Screen */
+    #form-tab, .split-mode-active #form-tab {
+        display: none !important;
+    }
+    
+    /* Pengaturan Kertas PDF Aktual Portrait */
+    .paper-a4 { 
+        display: flex !important;
+        flex-direction: column !important;
+        margin: 0 auto !important; 
+        padding: 15mm 20mm !important; 
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important; 
+        page-break-after: always !important; 
+        break-after: page !important;
+        page-break-inside: avoid !important; 
+        break-inside: avoid !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        max-width: none !important;
+        max-height: none !important;
+        overflow: hidden !important; 
+        position: relative !important;
+        flex: none !important;
+    }
+
+    /* Pengaturan Kertas PDF Aktual Landscape */
+    .paper-a4.landscape { 
+        page: landscape_page; 
+        width: 297mm !important;
+        height: 210mm !important;
+    }
+
+    .paper-a4:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+    }
+
+    /* Pastikan gambar tidak melebihi area box dan TTD bisa nempel */
+    .resize-wrapper { 
+        border: none !important; 
+        background: transparent !important;
+        resize: none !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    .resize-wrapper img {
+        max-height: 100% !important; 
+        object-fit: contain !important;
+        object-position: center top !important;
+    }
+}
