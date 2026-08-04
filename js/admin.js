@@ -18,11 +18,17 @@ if (sessionStorage.getItem('userRole') !== 'admin') {
     window.location.href = 'login.html';
 }
 
-window.logoutAdmin = function() {
-    sessionStorage.removeItem('isLoggedIn');
-    sessionStorage.removeItem('userRole');
-    window.location.href = 'login.html';
-};
+// Ganti fungsi logout lama dengan yang lebih aman anti-bug ini:
+document.addEventListener('DOMContentLoaded', () => {
+    const btnLogout = document.getElementById('btn-logout-admin');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', function() {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('userRole');
+            window.location.href = 'login.html';
+        });
+    }
+});
 
 // 3. TARIK DATA DARI FIREBASE REAL-TIME
 document.addEventListener('DOMContentLoaded', () => {
