@@ -14,9 +14,9 @@ function logout() {
 // ==============================================================================
 // PENGATURAN LOGO GLOBAL
 // ==============================================================================
-let logoKiriUrl = 'assets/images/telkomlogo.png';    
+let logoKiriUrl = 'assets/images/infra1.png';    
 let logoTengahUrl = 'assets/images/infra1.png'; 
-let logoKananUrl = 'assets/images/infra1.png';        
+let logoKananUrl = 'assets/images/telkomlogo.png';        
 
 // ==============================================================================
 // ARRAY DATA GAMBAR UNTUK SEMUA HALAMAN (STATE ASLI)
