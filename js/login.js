@@ -12,7 +12,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 2. TOAST NOTIFICATION KHUSUS LOGIN
+// 2. FUNGSI TOAST UI
 function showToast(message, type = 'normal') {
     const toastContainer = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -24,7 +24,7 @@ function showToast(message, type = 'normal') {
     setTimeout(() => { toast.classList.add('opacity-0', 'translate-y-2'); setTimeout(() => toast.remove(), 300); }, 4000);
 }
 
-// 3. FITUR TOGGLE SHOW/HIDE PASSWORD
+// 3. FUNGSI MATA PASSWORD
 window.togglePassword = function(inputId, iconId) {
     const input = document.getElementById(inputId);
     const icon = document.getElementById(iconId);
@@ -38,6 +38,7 @@ window.togglePassword = function(inputId, iconId) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // TAB UI
     const btnUser = document.getElementById('btn-tab-user');
     const btnAdmin = document.getElementById('btn-tab-admin');
     const formUser = document.getElementById('form-user');
@@ -55,32 +56,95 @@ document.addEventListener('DOMContentLoaded', () => {
         formAdmin.classList.remove('hidden'); formUser.classList.add('hidden');
     });
 
-    // LOGIKA USER DAFTAR/LOGIN KE FIREBASE
+    // MODAL STATUS (FIREBASE)
+    const btnCheckStatus = document.getElementById('btn-check-status');
+    const modalStatus = document.getElementById('modal-status');
+    btnCheckStatus.addEventListener('click', (e) => { e.preventDefault(); modalStatus.classList.remove('hidden'); });
+    document.getElementById('btn-close-status').addEventListener('click', () => { modalStatus.classList.add('hidden'); });
+
+    document.getElementById('form-status').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cEmail = document.getElementById('check-email').value.trim().toLowerCase();
+        const statusResult = document.getElementById('status-result');
+        statusResult.className = 'mt-6 p-4 rounded-xl border text-sm font-bold block animate-fade-in';
+        statusResult.innerHTML = `⏳ Mengecek ke server...`;
+
+        db.collection("users").doc(cEmail).get().then((doc) => {
+            if (!doc.exists) {
+                statusResult.innerHTML = `Akun tidak ditemukan. Silakan daftar.`;
+                statusResult.classList.add('bg-gray-100', 'text-gray-800');
+            } else {
+                const status = doc.data().status;
+                if (status === 'pending') {
+                    statusResult.innerHTML = `⏳ Akun Sedang Di-Review Admin.`;
+                    statusResult.classList.add('bg-yellow-100', 'text-yellow-800');
+                } else if (status === 'rejected') {
+                    statusResult.innerHTML = `❌ Akses Anda Ditolak Admin.`;
+                    statusResult.classList.add('bg-red-100', 'text-red-800');
+                } else if (status === 'approved') {
+                    statusResult.innerHTML = `✅ Akun Aktif! Silakan Login.`;
+                    statusResult.classList.add('bg-green-100', 'text-green-800');
+                } else if (status === 'reset_pending') {
+                    statusResult.innerHTML = `🔄 Menunggu persetujuan Ganti Sandi.`;
+                    statusResult.classList.add('bg-blue-100', 'text-blue-800');
+                }
+            }
+        }).catch(err => { statusResult.innerHTML = `Error Koneksi.`; });
+    });
+
+    // MODAL LUPA SANDI (FIREBASE)
+    const btnForgot = document.getElementById('btn-forgot-pass');
+    const modalForgot = document.getElementById('modal-forgot');
+    btnForgot.addEventListener('click', (e) => { e.preventDefault(); modalForgot.classList.remove('hidden'); });
+    document.getElementById('btn-close-forgot').addEventListener('click', () => { modalForgot.classList.add('hidden'); });
+
+    document.getElementById('form-forgot').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fEmail = document.getElementById('forgot-email').value.trim().toLowerCase();
+        const fPass = document.getElementById('forgot-password').value.trim();
+        showToast("⏳ Sedang memproses ke server...", "loading");
+
+        const userRef = db.collection("users").doc(fEmail);
+        userRef.get().then((doc) => {
+            if (!doc.exists) {
+                showToast("❌ Email belum terdaftar!", "error");
+            } else {
+                userRef.update({ status: 'reset_pending', tempPassword: fPass }).then(() => {
+                    modalForgot.classList.add('hidden');
+                    showToast("✅ Reset sandi diajukan! Tunggu ACC Admin.", "success");
+                    setTimeout(() => window.location.href = `mailto:ayaxgunsperm@gmail.com?subject=RESET PASSWORD&body=Halo Admin, tolong acc sandi baru email ${fEmail}`, 1500);
+                });
+            }
+        });
+    });
+
+    // LOGIN & REGISTER (FIREBASE)
     formUser.addEventListener('submit', function(e) {
         e.preventDefault(); 
         const email = document.getElementById('user-email').value.trim().toLowerCase();
         const password = document.getElementById('user-password').value.trim();
 
-        if (!email.endsWith('@gmail.com')) { showToast("❌ Gunakan email dengan akhiran @gmail.com!", "error"); return; }
-        showToast("⏳ Memeriksa ke server...", "loading");
+        if (!email.endsWith('@gmail.com')) { showToast("❌ Wajib pakai @gmail.com!", "error"); return; }
+        showToast("⏳ Menyambung ke Firebase...", "loading");
 
         const userRef = db.collection("users").doc(email);
         userRef.get().then((doc) => {
             if (!doc.exists) {
+                // DAFTAR BARU
                 userRef.set({
                     password: password,
                     status: 'pending',
                     tanggal_daftar: new Date().toISOString()
                 }).then(() => {
-                    showToast(`📩 Akun berhasil didaftarkan! Status: PENDING.`, "success");
-                    setTimeout(() => {
-                        window.location.href = `mailto:ayaxgunsperm@gmail.com?subject=Permintaan Akses Baru&body=Halo Admin, acc dong email ${email}`;
-                    }, 1500);
+                    showToast(`📩 Akun didaftarkan! Status: PENDING.`, "success");
+                    setTimeout(() => window.location.href = `mailto:ayaxgunsperm@gmail.com?subject=AKSES BARU LACT&body=Halo Admin, tolong acc akses web untuk email ${email}`, 1500);
                 });
             } else {
+                // LOGIN LAMA
                 const user = doc.data();
-                if (user.status === 'pending') showToast("⏳ Akun Anda belum di-Approve oleh Admin.", "error");
+                if (user.status === 'pending') showToast("⏳ Akun belum di-Approve Admin.", "error");
                 else if (user.status === 'rejected') showToast("❌ Akses DITOLAK Admin.", "error");
+                else if (user.status === 'reset_pending') showToast("🔄 Akun dalam verifikasi ganti sandi.", "error");
                 else if (user.status === 'approved') {
                     if (user.password === password) {
                         showToast("✅ Login Berhasil!", "success");
@@ -93,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // LOGIKA ADMIN LOGIN
+    // LOGIN ADMIN
     formAdmin.addEventListener('submit', function(e) {
         e.preventDefault();
         const email = document.getElementById('admin-email').value;
@@ -104,12 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('isLoggedIn', 'true');
             sessionStorage.setItem('userRole', 'admin');
             setTimeout(() => window.location.href = 'admin.html', 800);
-        } else {
-            showToast("❌ Password Admin Salah!", "error");
-        }
+        } else showToast("❌ Password Admin Salah!", "error");
     });
-
-    // LOGIKA TOMBOL CLOSE MODAL (Biar gak error)
-    document.getElementById('btn-forgot-pass').addEventListener('click', (e) => { e.preventDefault(); alert("Fitur lupa sandi sementara dinonaktifkan dalam mode ini."); });
-    document.getElementById('btn-check-status').addEventListener('click', (e) => { e.preventDefault(); alert("Fitur cek status sementara dinonaktifkan dalam mode ini."); });
 });
