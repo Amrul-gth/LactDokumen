@@ -41,6 +41,10 @@ let singleFilesBase64 = { boq: '', tb6: '', tb7: '', otdr1: '', otdr2: '', otdr3
 let globalTTD = '';
 let globalParaf = '';
 
+// IMAGE TRANSFORMS STATE (UNTUK RESIZE LEBAR/TINGGI & GESER POSISI)
+let imageTransforms = {}; 
+const defaultTf = { w: '100%', h: '100%', ox: 0, oy: 0 }; 
+
 // ARRAY DINAMIS
 let dynamicArrays = {};
 
@@ -509,6 +513,7 @@ function confirmResetProject() {
     singleFilesBase64 = { boq: '', tb6: '', tb7: '', otdr1: '', otdr2: '', otdr3: '', kml: '', mancore: '' }; 
     globalTTD = '';
     globalParaf = '';
+    imageTransforms = {}; 
 
     const allArrays = [evidenceData, opmData, opm2Data, opm3Data, opm4Data, lkData, pcData, evpsData, evhl1Data, evhl2Data, evscData, evsc2Data];
     allArrays.forEach(arr => {
@@ -591,6 +596,7 @@ function serializeProjectData() {
         singleFilesBase64: singleFilesBase64,
         globalTTD: globalTTD,
         globalParaf: globalParaf,
+        imageTransforms: imageTransforms,
         totalPages: totalPages,
         pageOrder: pageOrder,
         dynamicPagesConfig: dynamicPagesConfig,
@@ -685,6 +691,7 @@ function restoreProjectData(data) {
     singleFilesBase64 = data.singleFilesBase64 || singleFilesBase64;
     globalTTD = data.globalTTD || '';
     globalParaf = data.globalParaf || '';
+    imageTransforms = data.imageTransforms || {};
 
     for(let key in singleFilesBase64) {
         let b64 = singleFilesBase64[key];
@@ -1055,16 +1062,22 @@ window.handleDrop = function(e, targetPrefix, targetIndex) {
         let sourceArray = getArrayByPrefix(dragSourcePrefix);
         let targetArray = getArrayByPrefix(targetPrefix);
         
-        // Hanya tukar GAMBAR, jangan tukar caption agar teks tetap di tempat
+        let keySource = dragSourcePrefix + '_' + dragSourceIndex;
+        let keyTarget = targetPrefix + '_' + targetIndex;
+
+        // Tukar Data Gambarnya (Caption jangan ditukar)
         let tempPreview = sourceArray[dragSourceIndex].preview;
         let tempFile = sourceArray[dragSourceIndex].file;
-
         sourceArray[dragSourceIndex].preview = targetArray[targetIndex].preview;
         sourceArray[dragSourceIndex].file = targetArray[targetIndex].file;
-
         targetArray[targetIndex].preview = tempPreview;
         targetArray[targetIndex].file = tempFile;
         
+        // Tukar Transform/Editan Potongannya
+        let tempTf = imageTransforms[keySource];
+        imageTransforms[keySource] = imageTransforms[keyTarget];
+        imageTransforms[keyTarget] = tempTf;
+
         rebuildFormByPrefix(dragSourcePrefix);
         if (dragSourcePrefix !== targetPrefix) {
             rebuildFormByPrefix(targetPrefix);
@@ -1268,13 +1281,107 @@ function removeImgArray(prefix, index) {
 function updateCaptionArray(prefix, index, value) { let targetArray = getArrayByPrefix(prefix); targetArray[index].caption = value; updateReport(); }
 
 // ==========================================
-// DRAG PAN & ZOOM
+// MOUSE INTERACTION (GESER, ZOOM, DAN POTONG TANPA GRID TENGAH - SEPERTI WORD)
 // ==========================================
-let isDraggingImg = false, activeImg = null, imgStartX, imgStartY;
-document.addEventListener('mousedown', (e) => { if (e.target.classList.contains('draggable-preview')) { isDraggingImg = true; activeImg = e.target; imgStartX = e.clientX; imgStartY = e.clientY; e.preventDefault(); if (!activeImg.dataset.ox) activeImg.dataset.ox = 0; if (!activeImg.dataset.oy) activeImg.dataset.oy = 0; }});
-document.addEventListener('mousemove', (e) => { if (!isDraggingImg || !activeImg) return; const dx = e.clientX - imgStartX; const dy = e.clientY - imgStartY; let ox = parseFloat(activeImg.dataset.ox) + dx; let oy = parseFloat(activeImg.dataset.oy) + dy; activeImg.style.objectPosition = `calc(50% + ${ox}px) calc(50% + ${oy}px)`; imgStartX = e.clientX; imgStartY = e.clientY; activeImg.dataset.ox = ox; activeImg.dataset.oy = oy; });
-window.addEventListener('mouseup', () => { if (isDraggingImg) { isDraggingImg = false; activeImg = null; triggerAutoSave(); }});
-document.addEventListener('wheel', (e) => { if (e.target.classList.contains('draggable-preview')) { e.preventDefault(); let scale = parseFloat(e.target.dataset.scale || 1); if (e.deltaY < 0) scale += 0.1; else scale -= 0.1; if (scale < 0.5) scale = 0.5; if (scale > 3) scale = 3; e.target.dataset.scale = scale; e.target.style.transform = `scale(${scale})`; triggerAutoSave(); }}, {passive: false});
+let isDraggingImgPreview = false;
+let isResizingImg = false;
+let activeTfKey = null;
+let activeEl = null;
+let startX, startY;
+let startW, startH, startOx, startOy;
+let resizeDir = '';
+
+document.addEventListener('mousedown', (e) => { 
+    // Handle klik di sisi potong (crop edges - titik putih/biru)
+    if (e.target.classList.contains('res-handle')) { 
+        isResizingImg = true; 
+        resizeDir = e.target.dataset.dir; 
+        activeEl = e.target.closest('.resizable-wrapper');
+        activeTfKey = activeEl.dataset.key;
+        
+        startW = activeEl.offsetWidth;
+        startH = activeEl.offsetHeight;
+        
+        if (!imageTransforms[activeTfKey]) {
+            imageTransforms[activeTfKey] = { w: startW, h: startH, ox: 0, oy: 0 };
+        }
+        
+        if (typeof imageTransforms[activeTfKey].w === 'string' || !imageTransforms[activeTfKey].w) {
+            imageTransforms[activeTfKey].w = startW;
+            imageTransforms[activeTfKey].h = startH;
+        } else {
+            startW = imageTransforms[activeTfKey].w;
+            startH = imageTransforms[activeTfKey].h;
+        }
+        
+        startX = e.clientX;
+        startY = e.clientY;
+        e.preventDefault(); 
+    } 
+    // Handle klik di area tengah gambar (untuk geser/pan)
+    else if (e.target.classList.contains('drag-area')) { 
+        isDraggingImgPreview = true; 
+        activeEl = e.target.closest('.resizable-wrapper');
+        activeTfKey = activeEl.dataset.key;
+        
+        if(!imageTransforms[activeTfKey]) {
+            imageTransforms[activeTfKey] = { w: '100%', h: '100%', ox: 0, oy: 0 };
+        }
+        
+        startOx = imageTransforms[activeTfKey].ox || 0;
+        startOy = imageTransforms[activeTfKey].oy || 0;
+        startX = e.clientX; 
+        startY = e.clientY; 
+        e.preventDefault(); 
+    }
+});
+
+document.addEventListener('mousemove', (e) => { 
+    // Kalau sedang nge-CROP/RESIZE pinggirannya (seperti Word)
+    if (isResizingImg && activeEl) {
+        let dx = e.clientX - startX; 
+        let dy = e.clientY - startY; 
+        
+        let newW = startW;
+        let newH = startH;
+
+        if (resizeDir.includes('e')) newW = startW + (dx * 2);
+        if (resizeDir.includes('w')) newW = startW - (dx * 2);
+        if (resizeDir.includes('s')) newH = startH + (dy * 2);
+        if (resizeDir.includes('n')) newH = startH - (dy * 2);
+
+        if (newW < 20) newW = 20;
+        if (newH < 20) newH = 20;
+
+        imageTransforms[activeTfKey].w = newW;
+        imageTransforms[activeTfKey].h = newH;
+        
+        activeEl.style.width = newW + 'px';
+        activeEl.style.height = newH + 'px';
+    } 
+    // Kalau sedang MENGGESER/PAN gambar (tarik tengahnya)
+    else if (isDraggingImgPreview && activeEl) { 
+        let dx = e.clientX - startX; 
+        let dy = e.clientY - startY; 
+        
+        let newOx = startOx + dx;
+        let newOy = startOy + dy;
+        
+        imageTransforms[activeTfKey].ox = newOx;
+        imageTransforms[activeTfKey].oy = newOy;
+        
+        activeEl.style.transform = `translate(${newOx}px, ${newOy}px)`; 
+    }
+});
+
+window.addEventListener('mouseup', () => { 
+    if (isDraggingImgPreview || isResizingImg) { 
+        isDraggingImgPreview = false; 
+        isResizingImg = false;
+        activeEl = null; 
+        triggerAutoSave(); 
+    }
+});
 
 // ==========================================
 // LAINNYA
@@ -1363,28 +1470,53 @@ function updateDashboard() {
 
 
 // ==========================================
-// CORE RENDER SYSTEM (ANTI GEPENG PRINT)
+// CORE RENDER SYSTEM (PERMINTAAN RESIZE ALA MS WORD)
 // ==========================================
 const safeVal = (id) => { const el = document.getElementById(id); return (el && el.value.trim() !== '') ? el.value : '-'; };
 const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
 
-// Render Paraf
 const renderParaf = () => {
     return globalParaf ? `<div class="paraf-wrapper"><img src="${globalParaf}"></div>` : '';
 };
 
-// Menambahkan object-fit: contain untuk Anti-Gepeng & Anti-Potong di Laporan Utama
-const getSingleImg = (previewId) => {
+// Fungsi Pembuat Bingkai Drag & Drop Edge & Corner ala Ms. Word
+function createResizableWrapper(imgSrc, key, tf) {
+    let w = tf.w ? (typeof tf.w === 'number' ? tf.w + 'px' : tf.w) : '100%';
+    let h = tf.h ? (typeof tf.h === 'number' ? tf.h + 'px' : tf.h) : '100%';
+    let ox = tf.ox || 0;
+    let oy = tf.oy || 0;
+    
+    let styleStr = `width: ${w}; height: ${h}; display: block; position: relative; transform: translate(${ox}px, ${oy}px);`;
+    
+    return `
+    <div class="resizable-wrapper group mx-auto my-auto relative no-print-outline" style="${styleStr}" data-key="${key}">
+        <!-- The actual image, stretched to the wrapper's dimensions -->
+        <img src="${imgSrc}" class="w-full h-full pointer-events-none" style="object-fit: fill; display: block;">
+        
+        <!-- Drag Area overlay (for panning/geser) -->
+        <div class="drag-area absolute inset-0 cursor-grab active:cursor-grabbing z-10 no-print" title="Geser (Pan)"></div>
+        
+        <!-- 8 Resize Handles / Titik Potong Kanan Kiri Atas Bawah -->
+        <div class="res-handle absolute bg-transparent hover:bg-blue-500/50 cursor-n-resize z-20 no-print" style="top: -5px; left: 0; right: 0; height: 10px;" data-dir="n"></div>
+        <div class="res-handle absolute bg-transparent hover:bg-blue-500/50 cursor-s-resize z-20 no-print" style="bottom: -5px; left: 0; right: 0; height: 10px;" data-dir="s"></div>
+        <div class="res-handle absolute bg-transparent hover:bg-blue-500/50 cursor-e-resize z-20 no-print" style="top: 0; bottom: 0; right: -5px; width: 10px;" data-dir="e"></div>
+        <div class="res-handle absolute bg-transparent hover:bg-blue-500/50 cursor-w-resize z-20 no-print" style="top: 0; bottom: 0; left: -5px; width: 10px;" data-dir="w"></div>
+        
+        <div class="res-handle absolute bg-white border border-blue-500 shadow cursor-nw-resize z-30 no-print opacity-0 group-hover:opacity-100 transition-opacity" style="top: -5px; left: -5px; width: 10px; height: 10px; border-radius: 50%;" data-dir="nw"></div>
+        <div class="res-handle absolute bg-white border border-blue-500 shadow cursor-ne-resize z-30 no-print opacity-0 group-hover:opacity-100 transition-opacity" style="top: -5px; right: -5px; width: 10px; height: 10px; border-radius: 50%;" data-dir="ne"></div>
+        <div class="res-handle absolute bg-white border border-blue-500 shadow cursor-sw-resize z-30 no-print opacity-0 group-hover:opacity-100 transition-opacity" style="bottom: -5px; left: -5px; width: 10px; height: 10px; border-radius: 50%;" data-dir="sw"></div>
+        <div class="res-handle absolute bg-white border border-blue-500 shadow cursor-se-resize z-30 no-print opacity-0 group-hover:opacity-100 transition-opacity" style="bottom: -5px; right: -5px; width: 10px; height: 10px; border-radius: 50%;" data-dir="se"></div>
+        
+        <!-- Hover Outline -->
+        <div class="absolute inset-0 pointer-events-none border border-transparent group-hover:border-blue-400 z-10 no-print transition-colors"></div>
+    </div>`;
+}
+
+const getSingleImg = (previewId, key) => {
     const img = document.getElementById(previewId);
     if(img && !img.classList.contains('hidden') && img.src && !img.src.endsWith('index.html')) {
-        let style = "";
-        if(img.dataset.ox || img.dataset.scale) {
-             let ox = img.dataset.ox || 0; let oy = img.dataset.oy || 0; let scale = img.dataset.scale || 1;
-             style = `object-position: calc(50% + ${ox}px) calc(50% + ${oy}px); transform: scale(${scale});`;
-        } else {
-             style = `object-position: center top;`;
-        }
-        return `<img src="${img.src}" class="draggable-preview" style="${style} object-fit: contain; width: 100%; height: 100%;">`;
+        let tf = imageTransforms[key] || { w: '100%', h: '100%', ox: 0, oy: 0 };
+        return createResizableWrapper(img.src, key, tf);
     }
     return '';
 };
@@ -1432,12 +1564,12 @@ function updateReport() {
     // HAL 4
     function renderHal4(suffix = "", dupNum = 0) {
         const titleKop = dupNum > 0 ? `BOQ COMMISSIONING TEST DUPLIKAT ${dupNum}` : 'BOQ COMMISSIONING TEST';
-        let boqImg = getSingleImg('prev-boq'+suffix);
+        let boqImg = getSingleImg('prev-boq'+suffix, 'boq'+suffix);
         let ttdHtml = globalTTD ? `<div class="w-full flex justify-center my-1"><img src="${globalTTD}" class="h-16 object-contain" alt="TTD"></div>` : `<div class="h-16 w-full"></div>`;
 
         return `${kopHeader(titleKop)}${globalTabel}
         <div class="w-full mb-4 shrink-0">
-            ${boqImg ? `<div class="w-full m-0 has-image overflow-hidden" style="max-height:400px; display:flex; justify-content:center;">${boqImg}</div>` : '<div class="resize-wrapper w-full h-64 m-0 flex items-center justify-center text-slate-400 font-medium text-sm">(Tabel BOQ Belum Diupload)</div>'}
+            ${boqImg ? `<div class="w-full m-0 has-image overflow-hidden flex items-center justify-center" style="max-height:400px;">${boqImg}</div>` : '<div class="resize-wrapper w-full h-64 m-0 flex items-center justify-center text-slate-400 font-medium text-sm">(Tabel BOQ Belum Diupload)</div>'}
         </div>
         <div class="w-full flex justify-end text-[12px] font-bold text-center shrink-0 mt-4">
             <div class="w-64"><p class="uppercase">${safeVal('inp-tempat-ttd-p4'+suffix)}, ${safeVal('inp-tgl-ttd-p4'+suffix)}</p><p class="uppercase mt-1">${safeVal('inp-jabatan-ttd-p4'+suffix)}</p>
@@ -1471,19 +1603,11 @@ function updateReport() {
         if(cfg.type === 'lk') {
             const arr = getArrayByPrefix(prefix) || [];
             let gridLK = '<div class="opm-grid-3 w-full shrink-0 mt-2">';
-            let style0 = "", style1 = "";
-            if(arr[0] && arr[0].preview) {
-                let img = document.getElementById(`${prefix}-file-0`)?.previousElementSibling?.previousElementSibling;
-                if(img) { style0 = `object-position: calc(50% + ${img.dataset.ox||0}px) calc(50% + ${img.dataset.oy||0}px); transform: scale(${img.dataset.scale||1});`; }
-            }
-            if(arr[1] && arr[1].preview) {
-                let img = document.getElementById(`${prefix}-file-1`)?.previousElementSibling?.previousElementSibling;
-                if(img) { style1 = `object-position: calc(50% + ${img.dataset.ox||0}px) calc(50% + ${img.dataset.oy||0}px); transform: scale(${img.dataset.scale||1});`; }
-            }
             
-            // Tambahkan object-fit: contain
-            const src0 = arr[0] && arr[0].preview ? `<img src="${arr[0].preview}" class="draggable-preview" style="${style0} object-fit: contain; width: 100%; height: 100%;">` : '';
-            const src1 = arr[1] && arr[1].preview ? `<img src="${arr[1].preview}" class="draggable-preview" style="${style1} object-fit: contain; width: 100%; height: 100%;">` : '';
+            let key0 = prefix + '_0';
+            let key1 = prefix + '_1';
+            const src0 = arr[0] && arr[0].preview ? createResizableWrapper(arr[0].preview, key0, imageTransforms[key0] || defaultTf) : '';
+            const src1 = arr[1] && arr[1].preview ? createResizableWrapper(arr[1].preview, key1, imageTransforms[key1] || defaultTf) : '';
             
             gridLK += `<div class="photo-item empty-slot"><div class="opm-img-wrapper">${src0}</div><div class="photo-caption">${arr[0] ? arr[0].caption : ''}</div></div>`;
             gridLK += `<div class="photo-item empty-slot"><div class="opm-img-wrapper">${src1}</div><div class="photo-caption">${arr[1] ? arr[1].caption : ''}</div></div>`;
@@ -1495,15 +1619,8 @@ function updateReport() {
         let gridHTML = `<div class="${cfg.gridClass} w-full shrink-0 mt-2">`;
         arrayData.forEach((item, idx) => {
             if (!item) return;
-            let style = "";
-            if(item.preview) {
-                let img = document.getElementById(`${prefix}-file-${idx}`)?.previousElementSibling?.previousElementSibling;
-                if(img && (img.dataset.ox || img.dataset.scale)) { 
-                    style = `object-position: calc(50% + ${img.dataset.ox||0}px) calc(50% + ${img.dataset.oy||0}px); transform: scale(${img.dataset.scale||1});`; 
-                }
-            }
-            // Tambahkan object-fit: contain
-            const src = item.preview ? `<img src="${item.preview}" class="draggable-preview" style="${style} object-fit: contain; width: 100%; height: 100%;">` : '';
+            let key = prefix + '_' + idx;
+            const src = item.preview ? createResizableWrapper(item.preview, key, imageTransforms[key] || defaultTf) : '';
             gridHTML += `<div class="photo-item empty-slot"><div class="opm-img-wrapper">${src}</div><div class="photo-caption">${item.caption || '&nbsp;'}</div></div>`;
         });
         gridHTML += '</div>';
@@ -1517,7 +1634,7 @@ function updateReport() {
 
     function renderHalTabelLandscape(suffix = "", isHal7 = false) {
         let baseId = isHal7 ? '7' : '6';
-        let tbImg = getSingleImg(`prev-tb${baseId}${suffix}`);
+        let tbImg = getSingleImg(`prev-tb${baseId}${suffix}`, `tb${baseId}${suffix}`);
         const judul = safeVal(`inp-judul-p${baseId}${suffix}`);
         const dataP6 = `
             <div class="font-bold leading-tight w-full mb-4 uppercase text-[11px] shrink-0">
@@ -1539,7 +1656,7 @@ function updateReport() {
             <div class="border-t-[1.5px] border-black mb-[2px] shrink-0"></div><div class="border-t-[1.5px] border-black mb-3 shrink-0"></div>
             ${dataP6}
             <div class="w-full mb-4 shrink-0">
-                ${tbImg ? `<div class="w-full m-0 overflow-hidden" style="max-height:350px; display:flex; justify-content:center;">${tbImg}</div>` : '<div class="resize-wrapper w-full h-64 m-0 flex items-center justify-center text-slate-400 font-medium text-sm">(Tabel Belum Diupload)</div>'}
+                ${tbImg ? `<div class="w-full m-0 overflow-hidden flex items-center justify-center" style="max-height:350px;">${tbImg}</div>` : '<div class="resize-wrapper w-full h-64 m-0 flex items-center justify-center text-slate-400 font-medium text-sm">(Tabel Belum Diupload)</div>'}
             </div>
             <div class="w-full flex justify-end text-[12px] font-bold text-center mt-4 shrink-0">
                 <div class="w-64"><p class="uppercase">${safeVal(`inp-tempat-ttd-p${baseId}${suffix}`)}, ${safeVal(`inp-tgl-ttd-p${baseId}${suffix}`)}</p><p class="uppercase mt-1">${safeVal(`inp-jabatan-ttd-p${baseId}${suffix}`)}</p>
@@ -1552,7 +1669,7 @@ function updateReport() {
     const p7 = document.getElementById('preview-page-7'); if(p7) p7.innerHTML = renderHalTabelLandscape('', true);
 
     function renderHal19(suffix = "", customPrevId = "prev-otdr", customTitleId = "inp-otdr-title", customSubTitleId = "inp-otdr-subtitle") {
-        let otdrImg = getSingleImg(customPrevId+suffix);
+        let otdrImg = getSingleImg(customPrevId+suffix, customPrevId.replace('prev-', '')+suffix);
         let subTitle = getVal(customSubTitleId+suffix);
         let subTitleHtml = subTitle.trim() !== '' ? `<h3 class="text-center font-bold text-[14px] mt-1 mb-2">${subTitle}</h3>` : '';
         
@@ -1561,7 +1678,7 @@ function updateReport() {
             ${renderEvidentHeaderInfoOnly()}
             ${subTitleHtml}
             <div class="w-full flex-1 min-h-0 flex flex-col justify-start pb-2">
-                ${otdrImg ? `<div class="resize-wrapper has-image w-full h-full m-0">${otdrImg}</div>` : '<div class="resize-wrapper w-full h-full m-0 flex items-center justify-center text-[10px] text-slate-400 py-4">(Gambar Screenshot Full OTDR Belum Diupload)</div>'}
+                ${otdrImg ? `<div class="resize-wrapper has-image w-full h-full m-0 flex items-center justify-center overflow-hidden">${otdrImg}</div>` : '<div class="resize-wrapper w-full h-full m-0 flex items-center justify-center text-[10px] text-slate-400 py-4">(Gambar Screenshot Full OTDR Belum Diupload)</div>'}
             </div>
             ${renderParaf()}
         `;
@@ -1572,10 +1689,10 @@ function updateReport() {
 
     function renderHalGambarLandscape(suffix = "", title = "LAMPIRAN KML", previewId = "prev-kml", dupNum = 0) {
         const printTitle = dupNum > 0 ? `${title} DUPLIKAT ${dupNum}` : title;
-        let img = getSingleImg(previewId+suffix);
+        let img = getSingleImg(previewId+suffix, previewId.replace('prev-', '')+suffix);
         return `${renderEvidentHeader(printTitle)}
         <div class="w-full flex-1 min-h-0 flex flex-col justify-center pb-4">
-            ${img ? `<div class="resize-wrapper has-image w-full h-full m-0">${img}</div>` : '<div class="resize-wrapper w-full h-full m-0 flex items-center justify-center text-slate-400 py-4">(Gambar Belum Diupload)</div>'}
+            ${img ? `<div class="resize-wrapper has-image w-full h-full m-0 flex items-center justify-center overflow-hidden">${img}</div>` : '<div class="resize-wrapper w-full h-full m-0 flex items-center justify-center text-slate-400 py-4">(Gambar Belum Diupload)</div>'}
         </div>${renderParaf()}`;
     }
     const p22 = document.getElementById('preview-page-22'); if(p22) p22.innerHTML = renderHalGambarLandscape();
