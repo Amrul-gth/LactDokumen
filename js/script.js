@@ -333,7 +333,6 @@ function cetakNative() {
     
     let errors = [];
 
-    // Helper untuk mengecek text input
     const checkTxt = (id, pageNum, fieldName) => {
         const el = document.getElementById(id);
         if (pageOrder.includes(pageNum) && (!el || el.value.trim() === '' || el.value.trim() === '-')) {
@@ -341,14 +340,12 @@ function cetakNative() {
         }
     };
 
-    // Helper untuk mengecek single image (BOQ, Tabel, OTDR, KML, dll)
     const checkImg = (stateKey, pageNum, fieldName) => {
         if (pageOrder.includes(pageNum) && !singleFilesStatus[stateKey]) {
             errors.push({msg: `Hal ${pageNum}: Gambar Screenshot "${fieldName}" belum diupload!`, page: pageNum});
         }
     };
 
-    // Helper untuk mengecek Grid Foto (Evident, OPM, Patchcord, dll)
     const checkGrid = (prefix, pageNum, fieldName) => {
         if (pageOrder.includes(pageNum)) {
             let arr = getArrayByPrefix(prefix) || [];
@@ -359,11 +356,9 @@ function cetakNative() {
         }
     };
 
-    // --- VALIDASI GLOBAL ---
     if (!globalTTD) errors.push({msg: "GLOBAL: Tanda Tangan Utama belum dibuat di menu Kelola TTD!", page: 3});
     if (!globalParaf) errors.push({msg: "GLOBAL: Paraf Inisial belum dibuat di menu Kelola TTD!", page: 5});
 
-    // --- VALIDASI HALAMAN 1 (DATA PROYEK) ---
     checkTxt('inp-proyek', 1, 'Nama Proyek');
     checkTxt('inp-kontrak', 1, 'Nomor Kontrak');
     checkTxt('inp-sp', 1, 'Surat Pesanan');
@@ -371,17 +366,14 @@ function cetakNative() {
     checkTxt('inp-lokasi', 1, 'Lokasi');
     checkTxt('inp-pelaksana', 1, 'Pelaksana');
 
-    // --- VALIDASI HALAMAN 3 (LAPORAN UTAMA) ---
     checkTxt('inp-tgl-3', 3, 'Tanggal Laporan');
     checkTxt('inp-nama-3', 3, 'Nama Petugas');
     checkTxt('inp-nik-3', 3, 'NIK Petugas');
     checkTxt('inp-jabatan-3', 3, 'Jabatan Petugas');
 
-    // --- VALIDASI HALAMAN 4 (BOQ) ---
     checkImg('boq', 4, 'Tabel BOQ');
     checkTxt('inp-tempat-ttd-p4', 4, 'Tempat & Tanggal (TTD)');
     
-    // --- VALIDASI HALAMAN 6 & 7 (TABEL PARAMETER & DATA OPM) ---
     ['6', '7'].forEach(p => {
         let pageNum = parseInt(p);
         checkTxt(`inp-wave-${p}`, pageNum, 'Wave Length');
@@ -392,7 +384,6 @@ function cetakNative() {
     checkImg('tb6', 6, 'Tabel Parameter OPM (Hal 6)');
     checkImg('tb7', 7, 'Tabel Data OPM (Hal 7)');
 
-    // --- VALIDASI HALAMAN GRID FOTO (5, 8-18) ---
     checkGrid('ev', 5, 'Evidence Progres');
     checkGrid('opm', 8, 'Evidence OPM ODP 1');
     checkGrid('opm2', 9, 'Evidence OPM Lanjutan ODP 1');
@@ -409,7 +400,6 @@ function cetakNative() {
     checkGrid('evsc', 17, 'Evidence Aksesoris SC 1');
     checkGrid('evsc2', 18, 'Evidence Aksesoris SC Lanjutan');
 
-    // --- VALIDASI HALAMAN OTDR & MAPS (19-23) ---
     checkTxt('inp-otdr-title', 19, 'Judul Report OTDR 1');
     checkImg('otdr1', 19, 'Report OTDR 1');
     
@@ -422,7 +412,6 @@ function cetakNative() {
     checkImg('kml', 22, 'Lampiran Maps/KML');
     checkImg('mancore', 23, 'Lampiran Mancore');
 
-    // --- VALIDASI HALAMAN DUPLIKAT (DYNAMIC PAGES) ---
     dynamicPagesConfig.forEach(cfg => {
         const pageNum = cfg.id;
         const suffix = `_dup${cfg.id}`;
@@ -454,14 +443,10 @@ function cetakNative() {
         }
     });
 
-    // ==========================================
-    // TAMPILKAN ERROR KE MODAL JIKA ADA
-    // ==========================================
     if(errors.length > 0) {
         const list = document.getElementById('warning-list');
         list.innerHTML = '';
         
-        // Render list error (Maksimal render 10 agar UI tidak terlalu panjang, sisanya ditotal)
         const maxDisplay = 10;
         errors.slice(0, maxDisplay).forEach(e => { 
             list.innerHTML += `
@@ -483,7 +468,6 @@ function cetakNative() {
         return;
     }
 
-    // Jika Lolos Semua Validasi
     window.print();
 }
 
@@ -521,19 +505,16 @@ function closeModalReset() {
 function confirmResetProject() {
     closeModalReset();
     
-    // 1. Reset Single Files & Global State
     singleFilesStatus = { boq: false, tb6: false, tb7: false, otdr1: false, otdr2: false, otdr3: false, kml: false, mancore: false };
     singleFilesBase64 = { boq: '', tb6: '', tb7: '', otdr1: '', otdr2: '', otdr3: '', kml: '', mancore: '' }; 
     globalTTD = '';
     globalParaf = '';
 
-    // 2. Reset Arrays (Hanya bersihkan file dan preview, keep captions)
     const allArrays = [evidenceData, opmData, opm2Data, opm3Data, opm4Data, lkData, pcData, evpsData, evhl1Data, evhl2Data, evscData, evsc2Data];
     allArrays.forEach(arr => {
         arr.forEach(item => { item.file = null; item.preview = ''; });
     });
 
-    // 3. Remove Dynamic Pages (Halaman Duplikat)
     dynamicPagesConfig.forEach(cfg => {
         const formEl = document.getElementById('form-page-' + cfg.id);
         const printEl = document.getElementById('preview-page-' + cfg.id);
@@ -546,7 +527,6 @@ function confirmResetProject() {
     totalPages = 23;
     dynamicArrays = {};
 
-    // 4. Clear UI elements di DOM form utama
     document.querySelectorAll('img[id^="prev-"]').forEach(img => {
         img.src = '';
         img.classList.add('hidden');
@@ -562,7 +542,6 @@ function confirmResetProject() {
     clearCanvas('sig-canvas-paraf');
     document.querySelectorAll('input[type="file"]').forEach(input => input.value = '');
 
-    // 5. Rebuild UI penuh
     refreshDOMOrder();
     buildNavigasiForm();
     buildNavigasiPreview();
@@ -758,9 +737,6 @@ document.addEventListener('input', (e) => {
     }
 });
 
-// ==========================================
-// RENDER PENGURUTAN FISIK DOM
-// ==========================================
 function refreshDOMOrder() {
     const formWrapper = document.getElementById('form-pages-wrapper');
     const printArea = document.getElementById('print-area');
@@ -774,9 +750,6 @@ function refreshDOMOrder() {
     });
 }
 
-// ==========================================
-// RENDER NAVIGASI DINAMIS BERDASARKAN URUTAN
-// ==========================================
 function buildNavigasiForm() {
     const navContainer = document.getElementById('nav-container');
     const btns = navContainer.querySelectorAll('.page-nav-btn');
@@ -812,9 +785,6 @@ function buildNavigasiPreview() {
     selectEl.innerHTML = opts;
 }
 
-// ==========================================
-// FITUR TAMBAH/DUPLIKAT HALAMAN
-// ==========================================
 function openModalTambah() { document.getElementById('modal-tambah').classList.remove('hidden'); }
 function closeModalTambah() { document.getElementById('modal-tambah').classList.add('hidden'); }
 
@@ -1016,8 +986,153 @@ function buildEvscFormInputs() { generateFormInputs(evscData, 'evsc-inputs-conta
 function buildEvsc2FormInputs() { generateFormInputs(evsc2Data, 'evsc2-inputs-container', 'evsc2', 6); }
 
 // ==========================================
-// UPLOAD HANDLERS
+// DRAG AND DROP SWAP (TUKAR POSISI GAMBAR)
 // ==========================================
+let dragSourcePrefix = null;
+let dragSourceIndex = null;
+
+window.handleDragStart = function(e, prefix, index) {
+    dragSourcePrefix = prefix;
+    dragSourceIndex = index;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', index);
+    setTimeout(() => {
+        if(e.target) e.target.classList.add('opacity-40');
+    }, 10);
+};
+
+window.handleDragEnd = function(e) {
+    if(e.target) e.target.classList.remove('opacity-40');
+    dragSourcePrefix = null;
+    dragSourceIndex = null;
+};
+
+window.handleDragOver = function(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const item = e.target.closest('.drop-zone-item');
+    if (item) item.classList.add('ring-2', 'ring-red-500', 'ring-offset-2', 'scale-105');
+};
+
+window.handleDragLeaveItem = function(e) {
+    const item = e.target.closest('.drop-zone-item');
+    if (item) item.classList.remove('ring-2', 'ring-red-500', 'ring-offset-2', 'scale-105');
+};
+
+window.handleDrop = function(e, targetPrefix, targetIndex) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const item = e.target.closest('.drop-zone-item');
+    if (item) item.classList.remove('ring-2', 'ring-red-500', 'ring-offset-2', 'scale-105');
+
+    // 1. Jika File Didrop dari komputer langsung ke Kotak Satuan (Grid)
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if(file.type.startsWith('image/')) {
+            const r = new FileReader();
+            r.onload = function(evt) { 
+                let targetArray = getArrayByPrefix(targetPrefix);
+                targetArray[targetIndex].file = null; 
+                targetArray[targetIndex].preview = evt.target.result; 
+                rebuildFormByPrefix(targetPrefix); 
+                updateReport(); 
+                updateDashboard(); 
+                triggerAutoSave();
+                showToast("✅ Gambar ditarik ke dalam slot!", "success");
+            }
+            r.readAsDataURL(file);
+        } else {
+            showToast("❌ File harus berupa gambar!", "error");
+        }
+        dragSourcePrefix = null;
+        dragSourceIndex = null;
+        return;
+    }
+
+    // 2. Jika Swap/Tukar posisi antar foto
+    if (dragSourcePrefix !== null && dragSourceIndex !== null) {
+        let sourceArray = getArrayByPrefix(dragSourcePrefix);
+        let targetArray = getArrayByPrefix(targetPrefix);
+        
+        // Hanya tukar GAMBAR, jangan tukar caption agar teks tetap di tempat
+        let tempPreview = sourceArray[dragSourceIndex].preview;
+        let tempFile = sourceArray[dragSourceIndex].file;
+
+        sourceArray[dragSourceIndex].preview = targetArray[targetIndex].preview;
+        sourceArray[dragSourceIndex].file = targetArray[targetIndex].file;
+
+        targetArray[targetIndex].preview = tempPreview;
+        targetArray[targetIndex].file = tempFile;
+        
+        rebuildFormByPrefix(dragSourcePrefix);
+        if (dragSourcePrefix !== targetPrefix) {
+            rebuildFormByPrefix(targetPrefix);
+        }
+
+        updateReport();
+        updateDashboard();
+        triggerAutoSave();
+        showToast("🔄 Posisi gambar ditukar!", "success");
+    }
+    
+    dragSourcePrefix = null;
+    dragSourceIndex = null;
+};
+
+// ==========================================
+// GLOBAL EVENT LISTENER UNTUK DRAG & DROP KOTAK BESAR
+// ==========================================
+document.addEventListener('dragover', (e) => {
+    const dropZone = e.target.closest('.border-dashed');
+    const isItem = e.target.closest('.drop-zone-item');
+    if (dropZone && !isItem) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+        dropZone.classList.add('bg-red-200', 'border-red-500');
+    }
+});
+
+document.addEventListener('dragleave', (e) => {
+    const dropZone = e.target.closest('.border-dashed');
+    const isItem = e.target.closest('.drop-zone-item');
+    if (dropZone && !isItem) {
+        e.preventDefault();
+        dropZone.classList.remove('bg-red-200', 'border-red-500');
+    }
+});
+
+document.addEventListener('drop', (e) => {
+    const dropZone = e.target.closest('.border-dashed');
+    const isItem = e.target.closest('.drop-zone-item');
+    if (dropZone && !isItem) {
+        e.preventDefault();
+        dropZone.classList.remove('bg-red-200', 'border-red-500');
+        
+        if(e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            const inputMultiple = dropZone.querySelector('input[type="file"][multiple]');
+            const inputSingle = dropZone.querySelector('input[type="file"]:not([multiple])');
+            
+            // Drop untuk area yang nampung banyak foto (contoh: isi 9 foto sekaligus)
+            if (inputMultiple) {
+                const onchangeStr = inputMultiple.getAttribute('onchange');
+                if(onchangeStr) {
+                    const match = onchangeStr.match(/handleMultipleArray\(.*,\s*'([^']+)',\s*(\d+)\)/);
+                    if(match) {
+                        handleMultipleArray(e.dataTransfer.files, match[1], parseInt(match[2]));
+                    }
+                }
+            } 
+            // Drop untuk area foto single (seperti BOQ, Tabel 6/7, OTDR, KML)
+            else if (inputSingle) {
+                inputSingle.files = e.dataTransfer.files;
+                const event = new Event('change', { bubbles: true });
+                inputSingle.dispatchEvent(event);
+            }
+        }
+    }
+});
+
 function handleTableUpload(input, previewId, textId, btnRmId = null) {
     if(input.files && input.files[0]) {
         const file = input.files[0];
@@ -1068,6 +1183,7 @@ function handleTableUpload(input, previewId, textId, btnRmId = null) {
     }
 }
 
+// ANTI GEPENG INPUT FORM & SWAP RENDERER
 function generateFormInputs(dataArray, containerId, prefix, limit) {
     const container = document.getElementById(containerId);
     if(!container) return;
@@ -1076,8 +1192,30 @@ function generateFormInputs(dataArray, containerId, prefix, limit) {
     
     for(let index = 0; index < renderLimit; index++) {
         const item = dataArray[index];
-        const bgImg = item.preview ? `url(${item.preview})` : 'none';
-        container.innerHTML += `<div class="border p-2 rounded-xl bg-white relative shadow-sm hover:shadow-md transition"><div onclick="document.getElementById('${prefix}-file-${index}').click()" class="h-28 bg-red-50/50 mb-2 cursor-pointer bg-contain bg-center bg-no-repeat flex items-center justify-center relative group rounded-lg overflow-hidden border border-dashed border-red-200 hover:border-red-400 transition" style="background-image: ${bgImg}">${!item.preview ? '<span class="text-xs text-red-400 font-medium group-hover:scale-110 transition">Klik / Drop</span>' : ''}</div>${item.preview ? `<button onclick="removeImgArray('${prefix}', ${index})" type="button" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs font-bold leading-none shadow hover:bg-red-700 transition transform hover:scale-110 z-10">&times;</button>` : ''}<input type="text" oninput="updateCaptionArray('${prefix}', ${index}, this.value)" class="w-full text-[10px] sm:text-xs border-b border-transparent hover:border-red-200 p-1 text-center font-bold uppercase rounded outline-none focus:border-red-500 focus:bg-red-50 transition" value="${item.caption}"><input type="file" id="${prefix}-file-${index}" accept="image/*" class="hidden" onchange="handleSingleArray(this, '${prefix}', ${index})"></div>`;
+        const imgContent = item.preview 
+            ? `<img src="${item.preview}" class="w-full h-full object-contain pointer-events-none rounded-lg">` 
+            : `<span class="text-[10px] text-red-400 font-medium group-hover:scale-110 transition text-center leading-tight pointer-events-none">Klik / Drop<br>Gambar</span>`;
+            
+        container.innerHTML += `
+        <div class="drop-zone-item border p-2 rounded-xl bg-white relative shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing border-dashed border-2 border-transparent hover:border-red-200" 
+             draggable="true" 
+             ondragstart="handleDragStart(event, '${prefix}', ${index})" 
+             ondragend="handleDragEnd(event)"
+             ondragover="handleDragOver(event)" 
+             ondragleave="handleDragLeaveItem(event)"
+             ondrop="handleDrop(event, '${prefix}', ${index})">
+             
+            <div onclick="document.getElementById('${prefix}-file-${index}').click()" 
+                 class="h-28 bg-red-50/50 mb-2 cursor-pointer flex items-center justify-center relative group rounded-lg overflow-hidden border border-dashed border-red-200 hover:border-red-400 transition">
+                 ${imgContent}
+            </div>
+            
+            ${item.preview ? `<button onclick="removeImgArray('${prefix}', ${index})" type="button" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs font-bold leading-none shadow hover:bg-red-700 transition transform hover:scale-110 z-10">&times;</button>` : ''}
+            
+            <input type="text" oninput="updateCaptionArray('${prefix}', ${index}, this.value)" class="w-full text-[10px] sm:text-xs border-b border-transparent hover:border-red-200 p-1 text-center font-bold uppercase rounded outline-none focus:border-red-500 focus:bg-red-50 transition" value="${item.caption}">
+            
+            <input type="file" id="${prefix}-file-${index}" accept="image/*" class="hidden" onchange="handleSingleArray(this, '${prefix}', ${index})">
+        </div>`;
     }
 }
 
@@ -1101,14 +1239,23 @@ function handleMultipleArray(files, prefix, maxFiles) {
     const fileArray = Array.from(files).filter(f => f.type.startsWith('image/')).slice(0, maxFiles); 
     if(fileArray.length === 0 && files.length > 0) { showToast("❌ Gagal! Format file tidak didukung.", "error"); return; }
     let fIndex = 0, uploadedCount = 0;
+    
     for(let i=0; i<maxFiles; i++) {
         if(!targetArray[i].preview && fIndex < fileArray.length) {
             const f = fileArray[fIndex++]; const r = new FileReader(); let cI = i; 
-            r.onload = function(e) { targetArray[cI].file = null; targetArray[cI].preview = e.target.result; rebuildFormByPrefix(prefix); updateReport(); updateDashboard(); triggerAutoSave(); }
+            r.onload = function(e) { 
+                targetArray[cI].file = null; 
+                targetArray[cI].preview = e.target.result; 
+                rebuildFormByPrefix(prefix); 
+                updateReport(); 
+                updateDashboard(); 
+                triggerAutoSave(); 
+            }
             r.readAsDataURL(f); uploadedCount++;
         }
     }
-    if(uploadedCount > 0) showToast(`✅ ${uploadedCount} Gambar berhasil diupload!`, "success"); else if (fileArray.length > 0) showToast("⚠️ Slot gambar sudah penuh!");
+    if(uploadedCount > 0) showToast(`✅ ${uploadedCount} Gambar berhasil diupload!`, "success"); 
+    else if (fileArray.length > 0) showToast("⚠️ Slot gambar sudah penuh!");
 }
 
 function removeImgArray(prefix, index) { 
@@ -1216,7 +1363,7 @@ function updateDashboard() {
 
 
 // ==========================================
-// CORE RENDER SYSTEM
+// CORE RENDER SYSTEM (ANTI GEPENG PRINT)
 // ==========================================
 const safeVal = (id) => { const el = document.getElementById(id); return (el && el.value.trim() !== '') ? el.value : '-'; };
 const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
@@ -1226,6 +1373,7 @@ const renderParaf = () => {
     return globalParaf ? `<div class="paraf-wrapper"><img src="${globalParaf}"></div>` : '';
 };
 
+// Menambahkan object-fit: contain untuk Anti-Gepeng & Anti-Potong di Laporan Utama
 const getSingleImg = (previewId) => {
     const img = document.getElementById(previewId);
     if(img && !img.classList.contains('hidden') && img.src && !img.src.endsWith('index.html')) {
@@ -1236,7 +1384,7 @@ const getSingleImg = (previewId) => {
         } else {
              style = `object-position: center top;`;
         }
-        return `<img src="${img.src}" class="draggable-preview" style="${style}">`;
+        return `<img src="${img.src}" class="draggable-preview" style="${style} object-fit: contain; width: 100%; height: 100%;">`;
     }
     return '';
 };
@@ -1333,8 +1481,10 @@ function updateReport() {
                 if(img) { style1 = `object-position: calc(50% + ${img.dataset.ox||0}px) calc(50% + ${img.dataset.oy||0}px); transform: scale(${img.dataset.scale||1});`; }
             }
             
-            const src0 = arr[0] && arr[0].preview ? `<img src="${arr[0].preview}" class="draggable-preview" style="${style0}">` : '';
-            const src1 = arr[1] && arr[1].preview ? `<img src="${arr[1].preview}" class="draggable-preview" style="${style1}">` : '';
+            // Tambahkan object-fit: contain
+            const src0 = arr[0] && arr[0].preview ? `<img src="${arr[0].preview}" class="draggable-preview" style="${style0} object-fit: contain; width: 100%; height: 100%;">` : '';
+            const src1 = arr[1] && arr[1].preview ? `<img src="${arr[1].preview}" class="draggable-preview" style="${style1} object-fit: contain; width: 100%; height: 100%;">` : '';
+            
             gridLK += `<div class="photo-item empty-slot"><div class="opm-img-wrapper">${src0}</div><div class="photo-caption">${arr[0] ? arr[0].caption : ''}</div></div>`;
             gridLK += `<div class="photo-item empty-slot"><div class="opm-img-wrapper">${src1}</div><div class="photo-caption">${arr[1] ? arr[1].caption : ''}</div></div>`;
             gridLK += `<div class="photo-item flex flex-col justify-between empty-slot"><div class="flex-1 flex items-center justify-center p-4 text-center font-bold text-[13px] leading-snug break-words" style="min-height: 170px;">${safeVal('inp-label-kabel-text'+suffix)}</div><div class="photo-caption border-t-2 border-black">PANJANG KABEL</div></div></div>`;
@@ -1352,7 +1502,8 @@ function updateReport() {
                     style = `object-position: calc(50% + ${img.dataset.ox||0}px) calc(50% + ${img.dataset.oy||0}px); transform: scale(${img.dataset.scale||1});`; 
                 }
             }
-            const src = item.preview ? `<img src="${item.preview}" class="draggable-preview" style="${style}">` : '';
+            // Tambahkan object-fit: contain
+            const src = item.preview ? `<img src="${item.preview}" class="draggable-preview" style="${style} object-fit: contain; width: 100%; height: 100%;">` : '';
             gridHTML += `<div class="photo-item empty-slot"><div class="opm-img-wrapper">${src}</div><div class="photo-caption">${item.caption || '&nbsp;'}</div></div>`;
         });
         gridHTML += '</div>';

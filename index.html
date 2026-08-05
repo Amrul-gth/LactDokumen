@@ -4,20 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Revision Detector Pro - 23 Pages Premium</title>
-    
-    <!-- Library Eksternal -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-    <!-- Memanggil CSS Terpisah -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="app-bg font-sans text-gray-800 flex h-screen overflow-hidden">
-
-    <!-- Container Notifikasi Toast -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- Sidebar Glassmorphism -->
     <aside class="w-64 glass-sidebar text-white flex flex-col shrink-0 z-20 border-r border-white/10 relative overflow-y-auto">
         <div class="p-6 text-center border-b border-white/10 bg-black/20">
             <h1 class="text-2xl font-bold text-white tracking-wider drop-shadow-md">RevLACT<span class="text-orange-400">Pro</span></h1>
@@ -25,60 +18,30 @@
         </div>
         <nav class="flex-1 p-4 space-y-2 mt-2">
             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Main Menu</p>
-            <button onclick="switchTab('dashboard-tab')" class="nav-btn w-full text-left px-5 py-3 rounded-xl text-gray-300 font-medium hover:bg-white/10 hover:text-white transition-all shadow-sm flex items-center gap-3">
-                <span class="text-lg">📊</span> Dashboard Progres
-            </button>
-            <button onclick="switchTab('form-tab')" class="nav-btn active-nav w-full text-left px-5 py-3 rounded-xl bg-gradient-to-r from-red-600 to-orange-500 text-white font-medium hover:shadow-lg hover:shadow-red-500/30 transition-all shadow-md flex items-center gap-3">
-                <span class="text-lg">📝</span> Input Data LACT
-            </button>
-            <button onclick="switchTab('report-tab')" class="nav-btn w-full text-left px-5 py-3 rounded-xl text-gray-300 font-medium hover:bg-white/10 hover:text-white transition-all shadow-sm flex items-center gap-3">
-                <span class="text-lg">📄</span> Preview Laporan
-            </button>
-            
+            <button onclick="switchTab('dashboard-tab')" class="nav-btn w-full text-left px-5 py-3 rounded-xl text-gray-300 font-medium hover:bg-white/10 hover:text-white transition-all shadow-sm flex items-center gap-3"><span class="text-lg">📊</span> Dashboard Progres</button>
+            <button onclick="switchTab('form-tab')" class="nav-btn active-nav w-full text-left px-5 py-3 rounded-xl bg-gradient-to-r from-red-600 to-orange-500 text-white font-medium hover:shadow-lg hover:shadow-red-500/30 transition-all shadow-md flex items-center gap-3"><span class="text-lg">📝</span> Input Data LACT</button>
+            <button onclick="switchTab('report-tab')" class="nav-btn w-full text-left px-5 py-3 rounded-xl text-gray-300 font-medium hover:bg-white/10 hover:text-white transition-all shadow-sm flex items-center gap-3"><span class="text-lg">📄</span> Preview Laporan</button>
             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-6 mb-2">Power Tools</p>
-            <button onclick="toggleSplitScreen()" id="btn-split-screen" class="w-full text-left px-5 py-3 rounded-xl bg-indigo-600/30 text-indigo-300 font-medium border border-indigo-500/50 hover:bg-indigo-600 hover:text-white transition-all shadow-sm flex items-center gap-3">
-                <span class="text-lg">🪟</span> Split Screen Mode
-            </button>
-            <button onclick="openModalSignature()" class="w-full text-left px-5 py-3 rounded-xl bg-blue-600/30 text-blue-300 font-medium border border-blue-500/50 hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center gap-3">
-                <span class="text-lg">🖋️</span> Kelola TTD & Paraf
-            </button>
-            
+            <button onclick="toggleSplitScreen()" id="btn-split-screen" class="w-full text-left px-5 py-3 rounded-xl bg-indigo-600/30 text-indigo-300 font-medium border border-indigo-500/50 hover:bg-indigo-600 hover:text-white transition-all shadow-sm flex items-center gap-3"><span class="text-lg">🪟</span> Split Screen Mode</button>
+            <button onclick="openModalSignature()" class="w-full text-left px-5 py-3 rounded-xl bg-blue-600/30 text-blue-300 font-medium border border-blue-500/50 hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center gap-3"><span class="text-lg">🖋️</span> Kelola TTD & Paraf</button>
             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-6 mb-2">Manajemen</p>
-            <button onclick="openModalReset()" class="w-full text-left px-5 py-3 rounded-xl bg-red-600/30 text-red-300 font-medium border border-red-500/50 hover:bg-red-600 hover:text-white transition-all shadow-sm flex items-center gap-3">
-                <span class="text-lg">🔄</span> Reset Proyek Baru
-            </button>
+            <button onclick="openModalReset()" class="w-full text-left px-5 py-3 rounded-xl bg-red-600/30 text-red-300 font-medium border border-red-500/50 hover:bg-red-600 hover:text-white transition-all shadow-sm flex items-center gap-3"><span class="text-lg">🔄</span> Reset Proyek Baru</button>
         </nav>
-
         <div class="mt-auto p-4 border-t border-white/10 bg-black/10">
-            <a href="login.html" class="logout-btn w-full text-left px-5 py-3 rounded-xl text-red-300 font-medium hover:bg-red-600 hover:text-white transition-all duration-300 shadow-sm flex items-center gap-3 group outline-none">
-                <span class="text-lg transform transition-transform duration-300 group-hover:-translate-x-1">🚪</span> Keluar / Logout
-            </a>
+            <a href="login.html" class="logout-btn w-full text-left px-5 py-3 rounded-xl text-red-300 font-medium hover:bg-red-600 hover:text-white transition-all duration-300 shadow-sm flex items-center gap-3 group outline-none"><span class="text-lg transform transition-transform duration-300 group-hover:-translate-x-1">🚪</span> Keluar / Logout</a>
         </div>
     </aside>
 
-    <!-- Main Content Wrapper untuk Split Screen -->
     <div id="main-workspace" class="flex-1 h-full w-full relative">
         <main class="h-full overflow-y-auto p-4 md:p-8 relative transition-all duration-300" id="main-content-scroll">
             
-            <!-- ================= TAB 1: DASHBOARD PROGRES ================= -->
             <section id="dashboard-tab" class="hidden max-w-5xl mx-auto glass-panel p-8 rounded-2xl shadow-2xl border border-white/20 text-white animate-fade-in">
                 <h2 class="text-3xl font-bold border-b border-white/20 pb-4 mb-6">Dashboard Progres Upload</h2>
-                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-black/30 p-6 rounded-xl border border-white/10">
-                        <p class="text-red-200 text-sm font-semibold mb-1">Total Slot Gambar</p>
-                        <h3 class="text-4xl font-bold text-white">70</h3>
-                    </div>
-                    <div class="bg-black/30 p-6 rounded-xl border border-white/10">
-                        <p class="text-red-200 text-sm font-semibold mb-1">Gambar Terisi</p>
-                        <h3 class="text-4xl font-bold text-orange-400" id="dash-filled">0</h3>
-                    </div>
-                    <div class="bg-black/30 p-6 rounded-xl border border-white/10">
-                        <p class="text-red-200 text-sm font-semibold mb-1">Persentase Selesai</p>
-                        <h3 class="text-4xl font-bold text-green-400" id="dash-percent">0%</h3>
-                    </div>
+                    <div class="bg-black/30 p-6 rounded-xl border border-white/10"><p class="text-red-200 text-sm font-semibold mb-1">Total Slot Gambar</p><h3 class="text-4xl font-bold text-white">70</h3></div>
+                    <div class="bg-black/30 p-6 rounded-xl border border-white/10"><p class="text-red-200 text-sm font-semibold mb-1">Gambar Terisi</p><h3 class="text-4xl font-bold text-orange-400" id="dash-filled">0</h3></div>
+                    <div class="bg-black/30 p-6 rounded-xl border border-white/10"><p class="text-red-200 text-sm font-semibold mb-1">Persentase Selesai</p><h3 class="text-4xl font-bold text-green-400" id="dash-percent">0%</h3></div>
                 </div>
-
                 <div class="bg-black/30 p-6 rounded-xl border border-white/10">
                     <h4 class="font-bold mb-4">Progress Bar</h4>
                     <div class="w-full bg-gray-700 rounded-full h-4 mb-2 overflow-hidden shadow-inner">
@@ -88,19 +51,15 @@
                 </div>
             </section>
 
-            <!-- ================= TAB 2: FORM INPUT ================= -->
             <section id="form-tab" class="max-w-6xl mx-auto bg-white p-8 rounded-2xl shadow-2xl border border-gray-100 animate-fade-in w-full">
                 <h2 class="text-2xl font-bold border-b pb-4 mb-6 text-slate-800">Formulir Data Commissioning Test</h2>
-                
                 <div class="flex overflow-x-auto gap-2 mb-8 bg-slate-50 p-3 rounded-xl border border-slate-200 scroll-hide items-center" id="nav-container">
-                    <button type="button" onclick="openModalTambah()" class="shrink-0 px-4 py-2 bg-green-600 text-white rounded-lg font-bold text-xs shadow-md hover:bg-green-700 transition-all ml-2 flex items-center gap-1">
-                        <span>➕</span> Tambah Hal
-                    </button>
+                    <button type="button" onclick="openModalTambah()" class="shrink-0 px-4 py-2 bg-green-600 text-white rounded-lg font-bold text-xs shadow-md hover:bg-green-700 transition-all ml-2 flex items-center gap-1"><span>➕</span> Tambah Hal</button>
                 </div>
 
                 <form id="data-form" class="space-y-6 form-transition relative">
                     <div id="form-pages-wrapper">
-                        <!-- HALAMAN 1 (DATA) -->
+                        <!-- HALAMAN 1 -->
                         <div id="form-page-1" class="form-page-section animate-fade-in">
                             <h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">DATA GLOBAL PROYEK (HAL 1)</h3>
                             <div class="grid grid-cols-3 gap-4 mb-3 items-center"><label class="text-sm font-bold">PROYEK</label><input type="text" id="inp-proyek" oninput="updateReport()" class="col-span-2 border rounded p-2 focus:ring-2 focus:ring-red-500 outline-none uppercase transition" value="SP#21 Pengadaan dan Pemasangan OSP FTTH PT3 FBB Batch-3 Area 3"></div>
@@ -113,10 +72,7 @@
 
                         <!-- HALAMAN 2 -->
                         <div id="form-page-2" class="form-page-section hidden animate-fade-in">
-                            <div class="flex justify-between items-center mb-4 bg-red-50 border-l-4 border-red-600 p-3 rounded-r">
-                                <h3 class="font-semibold text-red-800">DAFTAR ISI & LAMPIRAN (HAL 2)</h3>
-                                <button type="button" onclick="tambahDaftarIsi()" class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-red-700 transition">+ Tambah Item</button>
-                            </div>
+                            <div class="flex justify-between items-center mb-4 bg-red-50 border-l-4 border-red-600 p-3 rounded-r"><h3 class="font-semibold text-red-800">DAFTAR ISI & LAMPIRAN (HAL 2)</h3><button type="button" onclick="tambahDaftarIsi()" class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-red-700 transition">+ Tambah Item</button></div>
                             <div id="container-daftar-isi" class="space-y-2">
                                 <div class="flex gap-2 items-center"><input type="text" oninput="updateReport()" class="flex-1 border rounded p-2 font-medium uppercase" value="LAPORAN COMMISIONING TEST"><button type="button" onclick="hapusDaftarIsi(this)" class="bg-red-100 text-red-600 px-3 py-2 rounded font-bold hover:bg-red-200">X</button></div>
                                 <div class="flex gap-2 items-center"><input type="text" oninput="updateReport()" class="flex-1 border rounded p-2 font-medium uppercase" value="HASIL UKUR OPM & OTDR (END TO END SESUAI SOW)"><button type="button" onclick="hapusDaftarIsi(this)" class="bg-red-100 text-red-600 px-3 py-2 rounded font-bold hover:bg-red-200">X</button></div>
@@ -133,7 +89,6 @@
                                 <div><label class="text-xs font-bold mb-1 block">Nama Petugas</label><input type="text" id="inp-nama-3" oninput="updateReport()" class="w-full border rounded p-2 uppercase focus:ring-2 focus:ring-red-500 transition" value="RIZQI MAULANA AKBAR"></div>
                                 <div><label class="text-xs font-bold mb-1 block">NIK</label><input type="text" id="inp-nik-3" oninput="updateReport()" class="w-full border rounded p-2 uppercase focus:ring-2 focus:ring-red-500 transition" value="19930281"></div>
                                 <div><label class="text-xs font-bold mb-1 block">Jabatan</label><input type="text" id="inp-jabatan-3" oninput="updateReport()" class="w-full border rounded p-2 uppercase focus:ring-2 focus:ring-red-500 transition" value="WASPANG PT. TELKOM AKSES"></div>
-                                <!-- Info TTD dipindahkan ke menu Kelola TTD -->
                                 <div class="col-span-2 p-3 bg-blue-50 border border-blue-200 rounded-lg mt-2 text-center shadow-sm">
                                     <p class="text-xs text-blue-700 font-semibold">ℹ️ Tanda Tangan (TTD) untuk halaman ini diatur terpusat di menu <span class="bg-blue-600 text-white px-2 py-0.5 rounded cursor-pointer hover:bg-blue-700" onclick="openModalSignature()">Kelola TTD & Paraf</span> di Sidebar.</p>
                                 </div>
@@ -143,35 +98,29 @@
                         <!-- HALAMAN 4 -->
                         <div id="form-page-4" class="form-page-section hidden animate-fade-in">
                             <h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">GAMBAR TABEL BOQ & TTD (HAL 4)</h3>
-                            
-                            <div class="mb-6 p-6 bg-red-50 rounded-xl border text-center border-dashed border-2 border-red-300 cursor-pointer hover:bg-red-100 transition relative group shadow-sm" onclick="document.getElementById('inp-file-boq').click()">
+                            <div class="mb-6 p-6 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative group shadow-sm" onclick="document.getElementById('inp-file-boq').click()">
                                 <button type="button" id="btn-rm-boq" onclick="removeSingleImg(event, 'inp-file-boq', 'prev-boq', 'txt-boq', 'btn-rm-boq', 'boq')" class="hidden absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow hover:bg-red-700 transition z-10">&times;</button>
                                 <img id="prev-boq" src="" class="hidden w-full h-40 object-contain mx-auto mb-2 rounded">
                                 <div id="txt-boq">
                                     <svg class="w-10 h-10 mx-auto mb-2 text-red-500 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                    <p class="font-bold text-red-600 mb-1">Upload Gambar Screenshot Tabel BOQ</p>
+                                    <p class="font-bold text-red-600 mb-1">Upload/Drop Screenshot Tabel BOQ</p>
                                 </div>
                                 <input type="file" id="inp-file-boq" accept="image/*" class="hidden" onchange="handleTableUpload(this, 'prev-boq', 'txt-boq', 'btn-rm-boq')">
                             </div>
-
                             <h4 class="font-bold text-sm mb-3 border-b pb-2">Tanda Tangan Halaman 4</h4>
                             <div class="grid grid-cols-2 gap-4">
                                 <div><label class="block text-xs font-medium mb-1">Tempat & Tanggal</label><div class="flex gap-2"><input type="text" id="inp-tempat-ttd-p4" oninput="updateReport()" value="MATARAM" class="w-1/3 border rounded p-2 text-sm uppercase focus:ring-2 focus:ring-red-500"><input type="text" id="inp-tgl-ttd-p4" oninput="updateReport()" value="2 JUNI 2026" class="flex-1 border rounded p-2 text-sm uppercase focus:ring-2 focus:ring-red-500"></div></div>
                                 <div><label class="block text-xs font-medium mb-1">Jabatan & Perusahaan</label><div class="flex gap-2"><input type="text" id="inp-jabatan-ttd-p4" oninput="updateReport()" value="WASPANG" class="flex-1 border rounded p-2 text-sm uppercase focus:ring-2 focus:ring-red-500"><input type="text" id="inp-perusahaan-ttd-p4" oninput="updateReport()" value="PT. TELKOM AKSES" class="flex-1 border rounded p-2 text-sm uppercase focus:ring-2 focus:ring-red-500"></div></div>
                                 <div><label class="text-xs font-bold mb-1 block">Nama Petugas TTD</label><input type="text" id="inp-nama-ttd-p4" oninput="updateReport()" class="w-full border rounded p-2 uppercase focus:ring-2 focus:ring-red-500" value="RIZQI MAULANA AKBAR"></div>
                                 <div><label class="text-xs font-bold mb-1 block">NIK Petugas TTD</label><input type="text" id="inp-nik-ttd-p4" oninput="updateReport()" class="w-full border rounded p-2 uppercase focus:ring-2 focus:ring-red-500" value="19930281"></div>
-                                <div class="col-span-2 p-3 bg-blue-50 border border-blue-200 rounded-lg mt-2 text-center shadow-sm">
-                                    <p class="text-xs text-blue-700 font-semibold">ℹ️ Gambar TTD diambil otomatis dari pengaturan <span class="bg-blue-600 text-white px-2 py-0.5 rounded cursor-pointer hover:bg-blue-700" onclick="openModalSignature()">Kelola TTD & Paraf</span>.</p>
-                                </div>
                             </div>
                         </div>
 
                         <!-- HAL 5 -->
                         <div id="form-page-5" class="form-page-section hidden animate-fade-in">
                             <h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE PROGRES (6 FOTO) HAL 5</h3>
-                            <div id="drop-zone-evidence" class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition duration-200 group">
-                                <svg class="w-12 h-12 mx-auto mb-2 text-red-500 group-hover:-translate-y-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                <p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 6 Foto Sekaligus!</p>
+                            <div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative">
+                                <p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 6 Foto Progres!</p>
                                 <input type="file" id="inp-ev-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'ev', 6)">
                                 <button type="button" onclick="document.getElementById('inp-ev-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 6 Foto</button>
                             </div>
@@ -188,10 +137,10 @@
                                 <div><label class="block text-xs font-bold mb-1">Jumlah Core</label><input type="text" id="inp-jml-core-6" oninput="updateReport()" value="12 CORE" class="w-full border p-2 rounded text-sm uppercase focus:ring-2 focus:ring-red-500"></div>
                                 <div><label class="block text-xs font-bold mb-1">Catuan</label><input type="text" id="inp-catuan-6" oninput="updateReport()" value="ODC-DMP-FAH" class="w-full border p-2 rounded text-sm uppercase focus:ring-2 focus:ring-red-500"></div>
                             </div>
-                            <div class="mb-6 p-6 bg-red-50 rounded-xl border text-center border-dashed border-2 border-red-300 cursor-pointer hover:bg-red-100 transition relative group shadow-sm" onclick="document.getElementById('inp-file-tabel-6').click()">
+                            <div class="mb-6 p-6 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative shadow-sm" onclick="document.getElementById('inp-file-tabel-6').click()">
                                 <button type="button" id="btn-rm-tb6" onclick="removeSingleImg(event, 'inp-file-tabel-6', 'prev-tb6', 'txt-tb6', 'btn-rm-tb6', 'tb6')" class="hidden absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow hover:bg-red-700 transition z-10">&times;</button>
                                 <img id="prev-tb6" src="" class="hidden w-full h-40 object-contain mx-auto mb-2 rounded">
-                                <div id="txt-tb6"><svg class="w-10 h-10 mx-auto mb-2 text-red-500 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg><p class="font-bold text-red-600 mb-1">Upload Gambar Screenshot Tabel Hal 6</p></div>
+                                <div id="txt-tb6"><p class="font-bold text-red-600 text-lg mb-1">Upload/Drop Screenshot Tabel Hal 6</p></div>
                                 <input type="file" id="inp-file-tabel-6" accept="image/*" class="hidden" onchange="handleTableUpload(this, 'prev-tb6', 'txt-tb6', 'btn-rm-tb6')">
                             </div>
                             <h4 class="font-bold text-sm mb-3 border-b pb-2">Tanda Tangan Halaman 6</h4>
@@ -200,9 +149,6 @@
                                 <div><label class="block text-xs font-medium mb-1">Jabatan & Perusahaan</label><div class="flex gap-2"><input type="text" id="inp-jabatan-ttd-p6" oninput="updateReport()" value="WASPANG" class="flex-1 border rounded p-2 text-sm uppercase focus:ring-2 focus:ring-red-500"><input type="text" id="inp-perusahaan-ttd-p6" oninput="updateReport()" value="PT. TELKOM AKSES" class="flex-1 border rounded p-2 text-sm uppercase focus:ring-2 focus:ring-red-500"></div></div>
                                 <div><label class="text-xs font-bold mb-1 block">Nama Petugas</label><input type="text" id="inp-nama-ttd-p6" oninput="updateReport()" class="w-full border rounded p-2 uppercase focus:ring-2 focus:ring-red-500" value="RIZQI MAULANA AKBAR"></div>
                                 <div><label class="text-xs font-bold mb-1 block">NIK Petugas</label><input type="text" id="inp-nik-ttd-p6" oninput="updateReport()" class="w-full border rounded p-2 uppercase focus:ring-2 focus:ring-red-500" value="19930281"></div>
-                                <div class="col-span-2 p-3 bg-blue-50 border border-blue-200 rounded-lg mt-2 text-center shadow-sm">
-                                    <p class="text-xs text-blue-700 font-semibold">ℹ️ Gambar TTD diambil otomatis dari pengaturan <span class="bg-blue-600 text-white px-2 py-0.5 rounded cursor-pointer hover:bg-blue-700" onclick="openModalSignature()">Kelola TTD & Paraf</span>.</p>
-                                </div>
                             </div>
                         </div>
 
@@ -216,13 +162,10 @@
                                 <div><label class="block text-xs font-bold mb-1">Jumlah Core</label><input type="text" id="inp-jml-core-7" oninput="updateReport()" value="12 CORE" class="w-full border p-2 rounded text-sm uppercase focus:ring-2 focus:ring-red-500"></div>
                                 <div><label class="block text-xs font-bold mb-1">Catuan</label><input type="text" id="inp-catuan-7" oninput="updateReport()" value="ODC-DMP-FAH" class="w-full border p-2 rounded text-sm uppercase focus:ring-2 focus:ring-red-500"></div>
                             </div>
-                            <div class="mb-6 p-6 bg-red-50 rounded-xl border text-center border-dashed border-2 border-red-300 cursor-pointer hover:bg-red-100 transition relative group shadow-sm" onclick="document.getElementById('inp-file-tabel-7').click()">
+                            <div class="mb-6 p-6 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative shadow-sm" onclick="document.getElementById('inp-file-tabel-7').click()">
                                 <button type="button" id="btn-rm-tb7" onclick="removeSingleImg(event, 'inp-file-tabel-7', 'prev-tb7', 'txt-tb7', 'btn-rm-tb7', 'tb7')" class="hidden absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow hover:bg-red-700 transition z-10">&times;</button>
                                 <img id="prev-tb7" src="" class="hidden w-full h-40 object-contain mx-auto mb-2 rounded">
-                                <div id="txt-tb7">
-                                    <svg class="w-10 h-10 mx-auto mb-2 text-red-500 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                    <p class="font-bold text-red-600 mb-1">Upload Gambar Screenshot Tabel OPM</p>
-                                </div>
+                                <div id="txt-tb7"><p class="font-bold text-red-600 text-lg mb-1">Upload/Drop Screenshot Tabel OPM</p></div>
                                 <input type="file" id="inp-file-tabel-7" accept="image/*" class="hidden" onchange="handleTableUpload(this, 'prev-tb7', 'txt-tb7', 'btn-rm-tb7')">
                             </div>
                             <h4 class="font-bold text-sm mb-3 border-b pb-2">Tanda Tangan Halaman 7</h4>
@@ -231,39 +174,33 @@
                                 <div><label class="block text-xs font-medium mb-1">Jabatan & Perusahaan</label><div class="flex gap-2"><input type="text" id="inp-jabatan-ttd-p7" oninput="updateReport()" value="WASPANG" class="flex-1 border rounded p-2 text-sm uppercase focus:ring-2 focus:ring-red-500"><input type="text" id="inp-perusahaan-ttd-p7" oninput="updateReport()" value="PT. TELKOM AKSES" class="flex-1 border rounded p-2 text-sm uppercase focus:ring-2 focus:ring-red-500"></div></div>
                                 <div><label class="text-xs font-bold mb-1 block">Nama Petugas</label><input type="text" id="inp-nama-ttd-p7" oninput="updateReport()" class="w-full border rounded p-2 uppercase focus:ring-2 focus:ring-red-500" value="RIZQI MAULANA AKBAR"></div>
                                 <div><label class="text-xs font-bold mb-1 block">NIK Petugas</label><input type="text" id="inp-nik-ttd-p7" oninput="updateReport()" class="w-full border rounded p-2 uppercase focus:ring-2 focus:ring-red-500" value="19930281"></div>
-                                <div class="col-span-2 p-3 bg-blue-50 border border-blue-200 rounded-lg mt-2 text-center shadow-sm">
-                                    <p class="text-xs text-blue-700 font-semibold">ℹ️ Gambar TTD diambil otomatis dari pengaturan <span class="bg-blue-600 text-white px-2 py-0.5 rounded cursor-pointer hover:bg-blue-700" onclick="openModalSignature()">Kelola TTD & Paraf</span>.</p>
-                                </div>
                             </div>
                         </div>
 
-                        <!-- HAL 8 s/d 18 (Grid Foto, Layout Aman) -->
-                        <div id="form-page-8" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE OPM ODP 1 (9 FOTO) HAL 8</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 9 Foto OPM ke Sini!</p><input type="file" id="inp-opm-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'opm', 9)"><button type="button" onclick="document.getElementById('inp-opm-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 9 Foto</button></div><div id="opm-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                        <div id="form-page-9" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE OPM LANJUTAN ODP 1 (HAL 9)</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition"><input type="file" id="inp-opm2-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'opm2', 3)"><button type="button" onclick="document.getElementById('inp-opm2-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih Foto</button></div><div id="opm2-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                        <div id="form-page-10" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE OPM KEDUA (9 FOTO) HAL 10</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition"><input type="file" id="inp-opm3-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'opm3', 9)"><button type="button" onclick="document.getElementById('inp-opm3-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih 9 Foto</button></div><div id="opm3-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                        <div id="form-page-11" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE OPM LANJUTAN ODP 2 (HAL 11)</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition"><input type="file" id="inp-opm4-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'opm4', 3)"><button type="button" onclick="document.getElementById('inp-opm4-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih Foto</button></div><div id="opm4-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                        <div id="form-page-12" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">LABEL KABEL DISTRIBUSI (HAL 12)</h3><div class="mb-4"><textarea id="inp-label-kabel-text" oninput="updateReport()" class="w-full border p-2 rounded text-sm font-bold uppercase focus:ring-2 focus:ring-red-500" rows="2">KABEL AWAL 2376M-KABEL AKHIR 3599M=1223M</textarea></div><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center"><input type="file" id="inp-lk-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'lk', 2)"><button type="button" onclick="document.getElementById('inp-lk-multiple').click()" class="bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih 2 Foto</button></div><div id="lk-inputs-container" class="grid grid-cols-2 gap-4"></div></div>
-                        <div id="form-page-13" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE PATCHCORD (HAL 13)</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center"><input type="file" id="inp-pc-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'pc', 3)"><button type="button" onclick="document.getElementById('inp-pc-multiple').click()" class="bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih 3 Foto</button></div><div id="pc-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                        <div id="form-page-14" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE PS-1-4 ODC (HAL 14)</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center"><input type="file" id="inp-evps-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evps', 3)"><button type="button" onclick="document.getElementById('inp-evps-multiple').click()" class="bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih 3 Foto</button></div><div id="evps-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                        <div id="form-page-15" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE AKSESORIS HL 1 (HAL 15)</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center"><input type="file" id="inp-evhl1-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evhl1', 9)"><button type="button" onclick="document.getElementById('inp-evhl1-multiple').click()" class="bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih 9 Foto</button></div><div id="evhl1-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                        <div id="form-page-16" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE AKSESORIS HL LANJUTAN (HAL 16)</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center"><input type="file" id="inp-evhl2-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evhl2', 3)"><button type="button" onclick="document.getElementById('inp-evhl2-multiple').click()" class="bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih Foto</button></div><div id="evhl2-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                        <div id="form-page-17" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE AKSESORIS SC 1 (HAL 17)</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center"><input type="file" id="inp-evsc-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evsc', 9)"><button type="button" onclick="document.getElementById('inp-evsc-multiple').click()" class="bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih 9 Foto</button></div><div id="evsc-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
-                        <div id="form-page-18" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4">EVIDENCE AKSESORIS SC LANJUTAN (HAL 18)</h3><div class="mb-6 p-8 bg-red-50 rounded-lg border-2 border-dashed border-red-400 text-center"><input type="file" id="inp-evsc2-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evsc2', 6)"><button type="button" onclick="document.getElementById('inp-evsc2-multiple').click()" class="bg-red-600 text-white px-6 py-2 rounded-full font-bold">Pilih Foto</button></div><div id="evsc2-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <!-- HAL 8 s/d 18 (Grid Foto) -->
+                        <div id="form-page-8" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE OPM ODP 1 (9 FOTO) HAL 8</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 9 Foto OPM!</p><input type="file" id="inp-opm-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'opm', 9)"><button type="button" onclick="document.getElementById('inp-opm-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 9 Foto</button></div><div id="opm-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <div id="form-page-9" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE OPM LANJUTAN ODP 1 (HAL 9)</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 3 Foto OPM!</p><input type="file" id="inp-opm2-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'opm2', 3)"><button type="button" onclick="document.getElementById('inp-opm2-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 3 Foto</button></div><div id="opm2-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <div id="form-page-10" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE OPM KEDUA (9 FOTO) HAL 10</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 9 Foto OPM Kedua!</p><input type="file" id="inp-opm3-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'opm3', 9)"><button type="button" onclick="document.getElementById('inp-opm3-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 9 Foto</button></div><div id="opm3-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <div id="form-page-11" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE OPM LANJUTAN ODP 2 (HAL 11)</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 3 Foto OPM!</p><input type="file" id="inp-opm4-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'opm4', 3)"><button type="button" onclick="document.getElementById('inp-opm4-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 3 Foto</button></div><div id="opm4-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <div id="form-page-12" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">LABEL KABEL DISTRIBUSI (HAL 12)</h3><div class="mb-4"><textarea id="inp-label-kabel-text" oninput="updateReport()" class="w-full border p-2 rounded text-sm font-bold uppercase focus:ring-2 focus:ring-red-500" rows="2">KABEL AWAL 2376M-KABEL AKHIR 3599M=1223M</textarea></div><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas 2 Foto Label Kabel!</p><input type="file" id="inp-lk-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'lk', 2)"><button type="button" onclick="document.getElementById('inp-lk-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 2 Foto</button></div><div id="lk-inputs-container" class="grid grid-cols-2 gap-4"></div></div>
+                        <div id="form-page-13" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE PATCHCORD (HAL 13)</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 3 Foto Patchcord!</p><input type="file" id="inp-pc-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'pc', 3)"><button type="button" onclick="document.getElementById('inp-pc-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 3 Foto</button></div><div id="pc-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <div id="form-page-14" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE PS-1-4 ODC (HAL 14)</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 3 Foto PS ODC!</p><input type="file" id="inp-evps-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evps', 3)"><button type="button" onclick="document.getElementById('inp-evps-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 3 Foto</button></div><div id="evps-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <div id="form-page-15" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE AKSESORIS HL 1 (HAL 15)</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 9 Foto Aksesoris HL!</p><input type="file" id="inp-evhl1-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evhl1', 9)"><button type="button" onclick="document.getElementById('inp-evhl1-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 9 Foto</button></div><div id="evhl1-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <div id="form-page-16" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE AKSESORIS HL LANJUTAN (HAL 16)</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 3 Foto Aksesoris HL!</p><input type="file" id="inp-evhl2-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evhl2', 3)"><button type="button" onclick="document.getElementById('inp-evhl2-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 3 Foto</button></div><div id="evhl2-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <div id="form-page-17" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE AKSESORIS SC 1 (HAL 17)</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 9 Foto Aksesoris SC!</p><input type="file" id="inp-evsc-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evsc', 9)"><button type="button" onclick="document.getElementById('inp-evsc-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 9 Foto</button></div><div id="evsc-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
+                        <div id="form-page-18" class="form-page-section hidden animate-fade-in"><h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">EVIDENCE AKSESORIS SC LANJUTAN (HAL 18)</h3><div class="mb-6 p-8 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative"><p class="font-bold text-red-800 text-lg mb-1">Tarik & Lepas Hingga 6 Foto Aksesoris SC!</p><input type="file" id="inp-evsc2-multiple" multiple accept="image/*" class="hidden" onchange="handleMultipleArray(this.files, 'evsc2', 6)"><button type="button" onclick="document.getElementById('inp-evsc2-multiple').click()" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 6 Foto</button></div><div id="evsc2-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div></div>
 
-                        <!-- HAL 19 (OTDR DIRINGKAS JADI 1 UPLOAD SAJA) -->
+                        <!-- HAL 19 -->
                         <div id="form-page-19" class="form-page-section hidden animate-fade-in">
                             <h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">REPORT HASIL UKUR OTDR 1 (HAL 19)</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-gray-50 p-4 border rounded shadow-sm">
                                 <div><label class="block text-xs font-bold mb-1">Judul Laporan</label><input type="text" id="inp-otdr-title" oninput="updateReport()" value="REPORT HASIL UKUR OTDR" class="w-full border p-2 rounded text-sm focus:ring-2 focus:ring-red-500 uppercase"></div>
                                 <div><label class="block text-xs font-bold mb-1">Sub Judul (Bisa Dikosongkan)</label><input type="text" id="inp-otdr-subtitle" oninput="updateReport()" value="OTDR Report" class="w-full border p-2 rounded text-sm focus:ring-2 focus:ring-red-500"></div>
                             </div>
-                            <div class="mb-6 p-6 bg-red-50 rounded-xl border text-center border-dashed border-2 border-red-300 cursor-pointer hover:bg-red-100 transition relative group shadow-sm" onclick="document.getElementById('inp-file-otdr').click()">
+                            <div class="mb-6 p-6 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative shadow-sm" onclick="document.getElementById('inp-file-otdr').click()">
                                 <button type="button" id="btn-rm-otdr1" onclick="removeSingleImg(event, 'inp-file-otdr', 'prev-otdr', 'txt-otdr', 'btn-rm-otdr1', 'otdr1')" class="hidden absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow hover:bg-red-700 transition z-10">&times;</button>
                                 <img id="prev-otdr" src="" class="hidden w-full h-40 object-contain mx-auto mb-2 rounded">
-                                <div id="txt-otdr">
-                                    <svg class="w-10 h-10 mx-auto mb-2 text-red-500 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                    <p class="font-bold text-red-600 mb-1">Upload Screenshot Full Report OTDR 1 (Dari Parameters s/d Event Table)</p>
-                                </div>
+                                <div id="txt-otdr"><p class="font-bold text-red-600 text-lg mb-1">Upload/Drop Screenshot Full Report OTDR 1</p></div>
                                 <input type="file" id="inp-file-otdr" accept="image/*,application/pdf" class="hidden" onchange="handleTableUpload(this, 'prev-otdr', 'txt-otdr', 'btn-rm-otdr1')">
                             </div>
                         </div>
@@ -275,13 +212,10 @@
                                 <div><label class="block text-xs font-bold mb-1">Judul Laporan</label><input type="text" id="inp-otdr2-title" oninput="updateReport()" value="REPORT HASIL UKUR OTDR" class="w-full border p-2 rounded text-sm focus:ring-2 focus:ring-red-500 uppercase"></div>
                                 <div><label class="block text-xs font-bold mb-1">Sub Judul (Bisa Dikosongkan)</label><input type="text" id="inp-otdr2-subtitle" oninput="updateReport()" value="OTDR Report" class="w-full border p-2 rounded text-sm focus:ring-2 focus:ring-red-500"></div>
                             </div>
-                            <div class="mb-6 p-6 bg-red-50 rounded-xl border text-center border-dashed border-2 border-red-300 cursor-pointer hover:bg-red-100 transition relative group shadow-sm" onclick="document.getElementById('inp-file-otdr2').click()">
+                            <div class="mb-6 p-6 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative shadow-sm" onclick="document.getElementById('inp-file-otdr2').click()">
                                 <button type="button" id="btn-rm-otdr2" onclick="removeSingleImg(event, 'inp-file-otdr2', 'prev-otdr2', 'txt-otdr2', 'btn-rm-otdr2', 'otdr2')" class="hidden absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow hover:bg-red-700 transition z-10">&times;</button>
                                 <img id="prev-otdr2" src="" class="hidden w-full h-40 object-contain mx-auto mb-2 rounded">
-                                <div id="txt-otdr2">
-                                    <svg class="w-10 h-10 mx-auto mb-2 text-red-500 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                    <p class="font-bold text-red-600 mb-1">Upload Screenshot Full Report OTDR 2</p>
-                                </div>
+                                <div id="txt-otdr2"><p class="font-bold text-red-600 text-lg mb-1">Upload/Drop Screenshot Full Report OTDR 2</p></div>
                                 <input type="file" id="inp-file-otdr2" accept="image/*,application/pdf" class="hidden" onchange="handleTableUpload(this, 'prev-otdr2', 'txt-otdr2', 'btn-rm-otdr2')">
                             </div>
                         </div>
@@ -293,13 +227,10 @@
                                 <div><label class="block text-xs font-bold mb-1">Judul Laporan</label><input type="text" id="inp-otdr3-title" oninput="updateReport()" value="REPORT HASIL UKUR OTDR CATUAN" class="w-full border p-2 rounded text-sm focus:ring-2 focus:ring-red-500 uppercase"></div>
                                 <div><label class="block text-xs font-bold mb-1">Sub Judul (Bisa Dikosongkan)</label><input type="text" id="inp-otdr3-subtitle" oninput="updateReport()" value="OTDR Report" class="w-full border p-2 rounded text-sm focus:ring-2 focus:ring-red-500"></div>
                             </div>
-                            <div class="mb-6 p-6 bg-red-50 rounded-xl border text-center border-dashed border-2 border-red-300 cursor-pointer hover:bg-red-100 transition relative group shadow-sm" onclick="document.getElementById('inp-file-otdr3').click()">
+                            <div class="mb-6 p-6 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative shadow-sm" onclick="document.getElementById('inp-file-otdr3').click()">
                                 <button type="button" id="btn-rm-otdr3" onclick="removeSingleImg(event, 'inp-file-otdr3', 'prev-otdr3', 'txt-otdr3', 'btn-rm-otdr3', 'otdr3')" class="hidden absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow hover:bg-red-700 transition z-10">&times;</button>
                                 <img id="prev-otdr3" src="" class="hidden w-full h-40 object-contain mx-auto mb-2 rounded">
-                                <div id="txt-otdr3">
-                                    <svg class="w-10 h-10 mx-auto mb-2 text-red-500 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                    <p class="font-bold text-red-600 mb-1">Upload Screenshot Full Report OTDR Catuan</p>
-                                </div>
+                                <div id="txt-otdr3"><p class="font-bold text-red-600 text-lg mb-1">Upload/Drop Screenshot Full Report OTDR Catuan</p></div>
                                 <input type="file" id="inp-file-otdr3" accept="image/*,application/pdf" class="hidden" onchange="handleTableUpload(this, 'prev-otdr3', 'txt-otdr3', 'btn-rm-otdr3')">
                             </div>
                         </div>
@@ -307,13 +238,10 @@
                         <!-- HAL 22 -->
                         <div id="form-page-22" class="form-page-section hidden animate-fade-in">
                             <h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">LAMPIRAN KML (HAL 22)</h3>
-                            <div class="mb-6 p-6 bg-red-50 rounded-xl border text-center border-dashed border-2 border-red-300 cursor-pointer hover:bg-red-100 transition relative group shadow-sm" onclick="document.getElementById('inp-file-kml').click()">
+                            <div class="mb-6 p-6 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative shadow-sm" onclick="document.getElementById('inp-file-kml').click()">
                                 <button type="button" id="btn-rm-kml" onclick="removeSingleImg(event, 'inp-file-kml', 'prev-kml', 'txt-kml', 'btn-rm-kml', 'kml')" class="hidden absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow hover:bg-red-700 transition z-10">&times;</button>
                                 <img id="prev-kml" src="" class="hidden w-full h-40 object-contain mx-auto mb-2 rounded">
-                                <div id="txt-kml">
-                                    <svg class="w-10 h-10 mx-auto mb-2 text-red-500 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                    <p class="font-bold text-red-600 mb-1">Upload Gambar Screenshot Maps KML (Otomatis Landscape)</p>
-                                </div>
+                                <div id="txt-kml"><p class="font-bold text-red-600 text-lg mb-1">Upload/Drop Screenshot Maps KML (Otomatis Landscape)</p></div>
                                 <input type="file" id="inp-file-kml" accept="image/*,application/pdf" class="hidden" onchange="handleTableUpload(this, 'prev-kml', 'txt-kml', 'btn-rm-kml')">
                             </div>
                         </div>
@@ -321,13 +249,10 @@
                         <!-- HAL 23 -->
                         <div id="form-page-23" class="form-page-section hidden animate-fade-in">
                             <h3 class="font-semibold text-red-800 bg-red-50 p-3 rounded mb-4 border-l-4 border-red-600">LAMPIRAN MANCORE (HAL 23)</h3>
-                            <div class="mb-6 p-6 bg-red-50 rounded-xl border text-center border-dashed border-2 border-red-300 cursor-pointer hover:bg-red-100 transition relative group shadow-sm" onclick="document.getElementById('inp-file-mancore').click()">
+                            <div class="mb-6 p-6 bg-red-50 rounded-xl border-2 border-dashed border-red-400 text-center cursor-pointer hover:bg-red-100 transition relative shadow-sm" onclick="document.getElementById('inp-file-mancore').click()">
                                 <button type="button" id="btn-rm-mancore" onclick="removeSingleImg(event, 'inp-file-mancore', 'prev-mancore', 'txt-mancore', 'btn-rm-mancore', 'mancore')" class="hidden absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full font-bold shadow hover:bg-red-700 transition z-10">&times;</button>
                                 <img id="prev-mancore" src="" class="hidden w-full h-40 object-contain mx-auto mb-2 rounded">
-                                <div id="txt-mancore">
-                                    <svg class="w-10 h-10 mx-auto mb-2 text-red-500 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                    <p class="font-bold text-red-600 mb-1">Upload Gambar Tabel Mancore (Otomatis Landscape)</p>
-                                </div>
+                                <div id="txt-mancore"><p class="font-bold text-red-600 text-lg mb-1">Upload/Drop Tabel Mancore (Otomatis Landscape)</p></div>
                                 <input type="file" id="inp-file-mancore" accept="image/*,application/pdf" class="hidden" onchange="handleTableUpload(this, 'prev-mancore', 'txt-mancore', 'btn-rm-mancore')">
                             </div>
                         </div>
@@ -335,19 +260,13 @@
                 </form>
             </section>
 
-            <!-- ================= TAB 3: PREVIEW LAPORAN (MEMANJANG) ================= -->
             <section id="report-tab" class="hidden pb-12 relative animate-fade-in md:mt-8 w-full">
                 <div class="sticky-nav w-full max-w-[210mm] mx-auto flex justify-between items-center bg-white rounded-lg shadow-md no-print mb-6 z-50">
-                    <select id="preview-page-select" class="border-2 border-slate-200 p-2 rounded-lg bg-slate-50 font-bold outline-none focus:border-red-500 cursor-pointer transition" onchange="scrollToPage(this.value)">
-                        <!-- Options Generated by JS -->
-                    </select>
-                    <button onclick="document.getElementById('modal-export').classList.remove('hidden')" class="bg-gradient-to-r from-red-600 to-orange-500 text-white px-6 py-2 rounded-lg font-bold hover:shadow-lg hover:shadow-red-500/40 flex items-center gap-2 transition hover:-translate-y-0.5">
-                        🖨️ Cetak / Validasi PDF
-                    </button>
+                    <select id="preview-page-select" class="border-2 border-slate-200 p-2 rounded-lg bg-slate-50 font-bold outline-none focus:border-red-500 cursor-pointer transition" onchange="scrollToPage(this.value)"></select>
+                    <button onclick="document.getElementById('modal-export').classList.remove('hidden')" class="bg-gradient-to-r from-red-600 to-orange-500 text-white px-6 py-2 rounded-lg font-bold hover:shadow-lg hover:shadow-red-500/40 flex items-center gap-2 transition hover:-translate-y-0.5">🖨️ Cetak / Validasi PDF</button>
                 </div>
                 
                 <div id="print-area" class="flex flex-col items-center mt-6 relative">
-                    <!-- Halaman akan diurutkan otomatis oleh JS ke dalam div ini -->
                     <div id="preview-page-1" class="paper-a4 flex flex-col bg-white"></div>
                     <div id="preview-page-2" class="paper-a4 flex flex-col bg-white"></div>
                     <div id="preview-page-3" class="paper-a4 flex flex-col bg-white"></div>
@@ -381,7 +300,6 @@
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-lg">
             <h3 class="text-xl font-bold mb-4 border-b pb-2">Pilih Template Halaman</h3>
             <p class="text-sm text-gray-500 mb-4">Pilih halaman yang ingin diduplikasi (otomatis menyesuaikan layout potrait/landscape).</p>
-            
             <select id="select-template-page" class="w-full border-2 border-slate-300 p-3 rounded-xl outline-none focus:border-red-500 mb-6 font-semibold bg-gray-50 text-sm">
                 <optgroup label="Teks & Laporan">
                     <option value="1">Hal 1: Cover Laporan (Portrait)</option>
@@ -415,7 +333,6 @@
                     <option value="23">Hal 23: Lampiran Mancore (Landscape)</option>
                 </optgroup>
             </select>
-
             <div class="flex justify-end gap-3">
                 <button onclick="closeModalTambah()" class="px-5 py-2 text-slate-600 bg-slate-200 hover:bg-slate-300 rounded-lg font-bold transition">Batal</button>
                 <button onclick="tambahHalamanDinamis()" class="px-5 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg font-bold shadow-md transition">Duplikasi Halaman</button>
@@ -427,14 +344,12 @@
     <div id="modal-export" class="fixed inset-0 bg-black/60 z-[100] flex justify-center items-center hidden animate-fade-in backdrop-blur-sm">
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md">
             <h3 class="text-xl font-bold mb-4 border-b pb-2">Revision Detector Pro</h3>
-            
             <div class="space-y-4 mb-6">
                 <div class="p-4 border-2 border-green-500 bg-green-50 rounded-xl cursor-pointer hover:bg-green-100 transition" onclick="cetakNative()">
                     <h4 class="font-bold text-green-700 mb-1">🔍 Scan & Cetak PDF</h4>
                     <p class="text-xs text-gray-600">Sistem akan melakukan scanning otomatis sebelum memanggil fungsi Print Browser. Dokumen dijamin tanpa salah!</p>
                 </div>
             </div>
-
             <div class="flex justify-end gap-3">
                 <button onclick="document.getElementById('modal-export').classList.add('hidden')" class="px-5 py-2 text-slate-600 bg-slate-200 hover:bg-slate-300 rounded-lg font-bold transition">Kembali</button>
             </div>
@@ -446,11 +361,7 @@
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-lg border-t-8 border-red-600">
             <h3 class="text-2xl font-bold mb-2 text-red-600 flex items-center gap-2">⚠️ Peringatan Revisi!</h3>
             <p class="text-sm text-gray-600 mb-4 border-b pb-3">Sistem mendeteksi ada data yang belum lengkap sebelum di-PDF-kan. <br> <span class="font-semibold text-red-500">Klik teks di bawah ini</span> untuk meluncur langsung ke halaman yang error:</p>
-            
-            <ul id="warning-list" class="list-disc pl-5 space-y-2 text-sm font-semibold text-slate-700 max-h-64 overflow-y-auto mb-6 bg-red-50 p-4 rounded-lg">
-                <!-- List error masuk kesini -->
-            </ul>
-
+            <ul id="warning-list" class="list-disc pl-5 space-y-2 text-sm font-semibold text-slate-700 max-h-64 overflow-y-auto mb-6 bg-red-50 p-4 rounded-lg"></ul>
             <div class="flex justify-between items-center">
                 <p class="text-xs text-red-500 italic">*Harap lengkapi dulu agar lolos validasi atasan.</p>
                 <div class="flex gap-2">
@@ -466,39 +377,31 @@
         <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <h3 class="text-2xl font-bold mb-2 border-b pb-2 flex items-center gap-2">🖋️ Kelola Tanda Tangan & Paraf</h3>
             <p class="text-sm text-gray-500 mb-6">Pusat pengaturan Tanda Tangan (untuk halaman pengesahan) dan Paraf (untuk stempel kecil di semua halaman evident). Anda bisa menggambar langsung atau upload gambar/foto (Background putih otomatis tembus pandang!).</p>
-            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
                 <!-- Kolom 1: Tanda Tangan Utama -->
                 <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl shadow-sm">
                     <h4 class="font-bold text-blue-800 mb-2">1. Tanda Tangan Utama (TTD)</h4>
                     <p class="text-xs text-blue-600 mb-4 border-b border-blue-200 pb-2">Otomatis menempel di Hal 3, 4, 6, 7 (beserta duplikatnya).</p>
-                    
                     <div class="border-2 border-dashed border-blue-300 rounded-lg bg-white overflow-hidden mb-3 relative flex justify-center cursor-crosshair">
                         <canvas id="sig-canvas-ttd" width="380" height="150" class="touch-none bg-transparent"></canvas>
                     </div>
-                    
                     <div class="flex justify-between gap-2 mb-4">
                         <button onclick="clearCanvas('sig-canvas-ttd')" class="px-3 py-1.5 text-red-600 bg-red-100 hover:bg-red-200 rounded-md text-xs font-bold transition">Hapus Coretan</button>
-                        
                         <div class="relative overflow-hidden inline-block">
                             <button class="px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-bold shadow hover:bg-blue-700 transition">Upload File TTD</button>
                             <input type="file" id="upload-ttd-global" accept="image/*" class="absolute left-0 top-0 opacity-0 cursor-pointer w-full h-full" onchange="handleGlobalUpload(this, 'sig-canvas-ttd')">
                         </div>
                     </div>
                 </div>
-
                 <!-- Kolom 2: Paraf -->
                 <div class="bg-orange-50 border border-orange-200 p-4 rounded-xl shadow-sm">
                     <h4 class="font-bold text-orange-800 mb-2">2. Paraf (Inisial)</h4>
                     <p class="text-xs text-orange-600 mb-4 border-b border-orange-200 pb-2">Otomatis menempel di pojok kanan bawah halaman Evident (kecuali Hal 1 & 2).</p>
-                    
                     <div class="border-2 border-dashed border-orange-300 rounded-lg bg-white overflow-hidden mb-3 relative flex justify-center cursor-crosshair">
                         <canvas id="sig-canvas-paraf" width="380" height="150" class="touch-none bg-transparent"></canvas>
                     </div>
-                    
                     <div class="flex justify-between gap-2 mb-4">
                         <button onclick="clearCanvas('sig-canvas-paraf')" class="px-3 py-1.5 text-red-600 bg-red-100 hover:bg-red-200 rounded-md text-xs font-bold transition">Hapus Coretan</button>
-                        
                         <div class="relative overflow-hidden inline-block">
                             <button class="px-3 py-1.5 bg-orange-500 text-white rounded-md text-xs font-bold shadow hover:bg-orange-600 transition">Upload File Paraf</button>
                             <input type="file" id="upload-paraf-global" accept="image/*" class="absolute left-0 top-0 opacity-0 cursor-pointer w-full h-full" onchange="handleGlobalUpload(this, 'sig-canvas-paraf')">
@@ -506,12 +409,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex justify-end gap-3 mt-4 border-t pt-4">
                 <button onclick="closeModalSignature()" class="px-6 py-2.5 text-slate-600 bg-slate-200 hover:bg-slate-300 rounded-lg font-bold transition">Batal</button>
-                <button onclick="applySignature()" class="px-6 py-2.5 text-white bg-green-600 hover:bg-green-700 rounded-lg font-bold shadow-md transition text-lg flex items-center gap-2">
-                    <span>💾</span> Terapkan & Simpan
-                </button>
+                <button onclick="applySignature()" class="px-6 py-2.5 text-white bg-green-600 hover:bg-green-700 rounded-lg font-bold shadow-md transition text-lg flex items-center gap-2"><span>💾</span> Terapkan & Simpan</button>
             </div>
         </div>
     </div>
@@ -519,23 +419,11 @@
     <!-- MODAL RESET PROYEK CUSTOM -->
     <div id="modal-reset" class="fixed inset-0 bg-black/70 z-[300] flex justify-center items-center hidden animate-fade-in backdrop-blur-sm">
         <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border-t-[10px] border-red-600 text-center relative overflow-hidden">
-            <!-- Background Decoration -->
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-red-50 rounded-full opacity-50"></div>
             <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-red-50 rounded-full opacity-50"></div>
-            
-            <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5 relative z-10 shadow-inner">
-                <span class="text-4xl filter drop-shadow">⚠️</span>
-            </div>
-            
+            <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5 relative z-10 shadow-inner"><span class="text-4xl filter drop-shadow">⚠️</span></div>
             <h3 class="text-2xl font-extrabold mb-3 text-slate-800 relative z-10 tracking-tight">Yakin Ingin Reset?</h3>
-            <p class="text-sm text-gray-500 mb-6 leading-relaxed relative z-10 px-2">
-                Semua <span class="font-bold text-red-500">foto yang diupload</span>, <span class="font-bold text-red-500">coretan TTD</span>, dan <span class="font-bold text-red-500">halaman duplikat</span> akan dihapus permanen.
-                <br><br>
-                <span class="bg-slate-50 border border-slate-200 p-2 rounded block text-xs text-slate-600 font-semibold shadow-sm">
-                    ✨ Teks data (Nama Proyek, SP, Lokasi, dll) akan tetap dipertahankan untuk proyek selanjutnya!
-                </span>
-            </p>
-            
+            <p class="text-sm text-gray-500 mb-6 leading-relaxed relative z-10 px-2">Semua <span class="font-bold text-red-500">foto yang diupload</span>, <span class="font-bold text-red-500">coretan TTD</span>, dan <span class="font-bold text-red-500">halaman duplikat</span> akan dihapus permanen.<br><br><span class="bg-slate-50 border border-slate-200 p-2 rounded block text-xs text-slate-600 font-semibold shadow-sm">✨ Teks data (Nama Proyek, SP, dll) akan tetap dipertahankan untuk proyek selanjutnya!</span></p>
             <div class="flex justify-center gap-4 relative z-10 mt-2">
                 <button onclick="closeModalReset()" class="flex-1 py-3 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold transition shadow-sm border border-slate-200">Batalkan</button>
                 <button onclick="confirmResetProject()" class="flex-1 py-3 text-white bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 rounded-xl font-bold shadow-lg transform hover:-translate-y-0.5 transition duration-200">Ya, Reset Bersih</button>
