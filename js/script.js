@@ -841,12 +841,6 @@ function tambahHalamanDinamis() {
         }
     });
 
-    const titleInputs = formEl.querySelectorAll('input[id*="-title"], input[id*="-judul-"]');
-    titleInputs.forEach(inp => {
-        inp.value = inp.value + " DUPLIKAT " + dupNum;
-        inp.setAttribute('value', inp.value);
-    });
-
     const originalImgs = sourceForm.querySelectorAll('img[id^="prev-"]');
     const clonedImgs = formEl.querySelectorAll('img[id^="prev-"]');
     originalImgs.forEach((origImg, index) => {
@@ -1298,7 +1292,6 @@ document.addEventListener('mousedown', (e) => {
         activeTfKey = activeEl.dataset.key;
         
         // --- KUNCI KHUSUS TABEL DOKUMEN (Opsional) ---
-        // Jika ini adalah tabel dokumen asli (BOQ/OPM 1/OPM 2), hentikan agar tidak bisa diklik
         if (activeTfKey && (activeTfKey.includes('boq') || activeTfKey.includes('tb6') || activeTfKey.includes('tb7'))) {
             return; 
         }
@@ -1306,10 +1299,7 @@ document.addEventListener('mousedown', (e) => {
         // --- KUNCI RAHASIA: BEKUKAN KOTAK TABEL AGAR TIDAK MELAR ---
         const parent = activeEl.parentElement;
         if (parent) {
-            // Ambil ukuran asli kotak saat ini sebelum gambar ditarik
             const rect = parent.getBoundingClientRect();
-            
-            // Paksakan kotaknya membeku di ukuran tersebut dan sembunyikan gambar yang meluber (overflow hidden)
             if (!parent.dataset.locked) {
                 parent.style.width = rect.width + 'px';
                 parent.style.height = rect.height + 'px';
@@ -1319,12 +1309,9 @@ document.addEventListener('mousedown', (e) => {
                 parent.style.position = 'relative';
                 parent.dataset.locked = 'true';
             }
-            
-            // Lepaskan batasan gambar agar bebas dibesarkan melampaui kotaknya
             activeEl.style.maxWidth = 'none';
             activeEl.style.maxHeight = 'none';
         }
-        // -------------------------------------------------------------
 
         if (e.target.classList.contains('res-handle')) { 
             isResizingImg = true; 
@@ -1485,7 +1472,6 @@ function updateDashboard() {
     document.getElementById('dash-percent').innerText = `${percentage}%`; document.getElementById('dash-progress-bar').style.width = `${percentage}%`;
 }
 
-
 // ==========================================
 // CORE RENDER SYSTEM (PERMINTAAN RESIZE ALA MS WORD)
 // ==========================================
@@ -1538,6 +1524,9 @@ const getSingleImg = (previewId, key) => {
     return '';
 };
 
+// ==============================================================================
+// UPDATE REPORT (SUDAH DIBERSIHKAN DARI TEKS DUPLIKAT OTOMATIS)
+// ==============================================================================
 function updateReport() {
     let globalData = {
         proyek: safeVal('inp-proyek'), kontrak: safeVal('inp-kontrak'), sp: safeVal('inp-sp'),
@@ -1564,8 +1553,8 @@ function updateReport() {
     if(p2) p2.innerHTML = `<div class="flex justify-between items-center mb-16 mt-4 shrink-0"><img src="${logoKiriUrl}" ${fallbackLogo} class="h-[30px] object-contain" alt="Telkom"><img src="${logoKananUrl}" ${fallbackLogo} class="h-[30px] object-contain" alt="Infra"></div><h1 class="text-xl font-bold text-center mb-16 leading-relaxed shrink-0">DAFTAR ISI<br>DOKUMEN LAPORAN COMMISIONING TEST<br>(LACT)</h1><div class="px-8">${listHTML}</div>`;
 
     // HAL 3
-    function renderHal3(suffix = "", dupNum = 0) {
-        const titleKop = dupNum > 0 ? `LAPORAN COMMISSIONING TEST DUPLIKAT ${dupNum}` : 'LAPORAN COMMISSIONING TEST';
+    function renderHal3(suffix = "") {
+        const titleKop = 'LAPORAN COMMISSIONING TEST'; 
         const tglRaw = safeVal('inp-tgl-3'+suffix); const ejaTanggal = (tglRaw !== '-') ? spellDate(tglRaw) : "......, tanggal ...... bulan ...... tahun ......"; const formatTgl = (tglRaw !== '-') ? formatTanggal(tglRaw) : ".......";
         let ttdHtml = globalTTD ? `<div class="w-full flex justify-center my-1"><img src="${globalTTD}" class="h-20 object-contain" alt="TTD"></div>` : `<div class="h-20 w-full"></div>`;
 
@@ -1579,8 +1568,8 @@ function updateReport() {
     const p3 = document.getElementById('preview-page-3'); if(p3) p3.innerHTML = renderHal3();
 
     // HAL 4
-    function renderHal4(suffix = "", dupNum = 0) {
-        const titleKop = dupNum > 0 ? `BOQ COMMISSIONING TEST DUPLIKAT ${dupNum}` : 'BOQ COMMISSIONING TEST';
+    function renderHal4(suffix = "") {
+        const titleKop = 'BOQ COMMISSIONING TEST';
         let boqImg = getSingleImg('prev-boq'+suffix, 'boq'+suffix);
         let ttdHtml = globalTTD ? `<div class="w-full flex justify-center my-1"><img src="${globalTTD}" class="h-16 object-contain" alt="TTD"></div>` : `<div class="h-16 w-full"></div>`;
 
@@ -1611,11 +1600,11 @@ function updateReport() {
         18: { type: 'grid', title: 'EVIDENCE AKSESORIS PU-AS-SC', prefix: 'evsc2', gridClass: 'opm-grid-3' },
     };
 
-    function renderGridPage(suffix, sourceId, dupNum = 0) {
+    function renderGridPage(suffix, sourceId) {
         const cfg = pageTemplates[sourceId];
         if(!cfg) return '';
         const prefix = suffix ? cfg.prefix + suffix : cfg.prefix;
-        const printTitle = dupNum > 0 ? `${cfg.title} DUPLIKAT ${dupNum}` : cfg.title;
+        const printTitle = cfg.title; // TIDAK ADA DUPLIKAT LAGI
         
         if(cfg.type === 'lk') {
             const arr = getArrayByPrefix(prefix) || [];
@@ -1652,7 +1641,7 @@ function updateReport() {
     function renderHalTabelLandscape(suffix = "", isHal7 = false) {
         let baseId = isHal7 ? '7' : '6';
         let tbImg = getSingleImg(`prev-tb${baseId}${suffix}`, `tb${baseId}${suffix}`);
-        const judul = safeVal(`inp-judul-p${baseId}${suffix}`);
+        const judul = safeVal(`inp-judul-p${baseId}${suffix}`); 
         const dataP6 = `
             <div class="font-bold leading-tight w-full mb-4 uppercase text-[11px] shrink-0">
                 <div class="flex mb-1"><div class="w-[180px] italic">OPERATION WAVE LENGTH</div><div class="w-4 text-center">:</div><div class="flex-1 italic">${safeVal('inp-wave-'+baseId+suffix)}</div></div>
@@ -1704,8 +1693,8 @@ function updateReport() {
     const p20 = document.getElementById('preview-page-20'); if(p20) p20.innerHTML = renderHal19("", "prev-otdr2", "inp-otdr2-title", "inp-otdr2-subtitle");
     const p21 = document.getElementById('preview-page-21'); if(p21) p21.innerHTML = renderHal19("", "prev-otdr3", "inp-otdr3-title", "inp-otdr3-subtitle");
 
-    function renderHalGambarLandscape(suffix = "", title = "LAMPIRAN KML", previewId = "prev-kml", dupNum = 0) {
-        const printTitle = dupNum > 0 ? `${title} DUPLIKAT ${dupNum}` : title;
+    function renderHalGambarLandscape(suffix = "", title = "LAMPIRAN KML", previewId = "prev-kml") {
+        const printTitle = title; // TIDAK ADA DUPLIKAT LAGI
         let img = getSingleImg(previewId+suffix, previewId.replace('prev-', '')+suffix);
         return `${renderEvidentHeader(printTitle)}
         <div class="w-full flex-1 min-h-0 flex flex-col justify-center pb-4">
@@ -1722,15 +1711,15 @@ function updateReport() {
         
         if(page.sourceId === 1) pageDOM.innerHTML = p1.innerHTML; 
         else if(page.sourceId === 2) pageDOM.innerHTML = p2.innerHTML; 
-        else if(page.sourceId === 3) pageDOM.innerHTML = renderHal3(idSuffix, page.dupNum);
-        else if(page.sourceId === 4) pageDOM.innerHTML = renderHal4(idSuffix, page.dupNum);
-        else if([5,8,9,10,11,12,13,14,15,16,17,18].includes(page.sourceId)) pageDOM.innerHTML = renderGridPage(idSuffix, page.sourceId, page.dupNum);
+        else if(page.sourceId === 3) pageDOM.innerHTML = renderHal3(idSuffix); // dupNum dihapus
+        else if(page.sourceId === 4) pageDOM.innerHTML = renderHal4(idSuffix); // dupNum dihapus
+        else if([5,8,9,10,11,12,13,14,15,16,17,18].includes(page.sourceId)) pageDOM.innerHTML = renderGridPage(idSuffix, page.sourceId); // dupNum dihapus
         else if(page.sourceId === 6) pageDOM.innerHTML = renderHalTabelLandscape(idSuffix, false);
         else if(page.sourceId === 7) pageDOM.innerHTML = renderHalTabelLandscape(idSuffix, true);
         else if(page.sourceId === 19) pageDOM.innerHTML = renderHal19(idSuffix);
         else if(page.sourceId === 20) pageDOM.innerHTML = renderHal19(idSuffix, "prev-otdr2", "inp-otdr2-title", "inp-otdr2-subtitle");
         else if(page.sourceId === 21) pageDOM.innerHTML = renderHal19(idSuffix, "prev-otdr3", "inp-otdr3-title", "inp-otdr3-subtitle");
-        else if(page.sourceId === 22) pageDOM.innerHTML = renderHalGambarLandscape(idSuffix, "LAMPIRAN KML", "prev-kml", page.dupNum);
-        else if(page.sourceId === 23) pageDOM.innerHTML = renderHalGambarLandscape(idSuffix, "LAMPIRAN MANCORE", "prev-mancore", page.dupNum);
+        else if(page.sourceId === 22) pageDOM.innerHTML = renderHalGambarLandscape(idSuffix, "LAMPIRAN KML", "prev-kml"); // dupNum dihapus
+        else if(page.sourceId === 23) pageDOM.innerHTML = renderHalGambarLandscape(idSuffix, "LAMPIRAN MANCORE", "prev-mancore"); // dupNum dihapus
     });
 }
