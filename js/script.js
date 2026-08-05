@@ -1280,9 +1280,9 @@ function removeImgArray(prefix, index) {
 }
 function updateCaptionArray(prefix, index, value) { let targetArray = getArrayByPrefix(prefix); targetArray[index].caption = value; updateReport(); }
 
-// ==========================================
-// MOUSE INTERACTION (GESER, ZOOM, DAN POTONG TANPA GRID TENGAH - SEPERTI WORD)
-// ==========================================
+// ==============================================================================
+// MOUSE INTERACTION (BEBAS GESER GAMBAR + BINGKAI TABEL TERKUNCI KAKU)
+// ==============================================================================
 let isDraggingImgPreview = false;
 let isResizingImg = false;
 let activeTfKey = null;
@@ -1292,52 +1292,70 @@ let startW, startH, startOx, startOy;
 let resizeDir = '';
 
 document.addEventListener('mousedown', (e) => { 
-    // Handle klik di sisi potong (crop edges - titik putih/biru)
-    if (e.target.classList.contains('res-handle')) { 
-        isResizingImg = true; 
-        resizeDir = e.target.dataset.dir; 
+    if (e.target.classList.contains('res-handle') || e.target.classList.contains('drag-area')) { 
         activeEl = e.target.closest('.resizable-wrapper');
+        if (!activeEl) return;
         activeTfKey = activeEl.dataset.key;
         
-        startW = activeEl.offsetWidth;
-        startH = activeEl.offsetHeight;
-        
-        if (!imageTransforms[activeTfKey]) {
-            imageTransforms[activeTfKey] = { w: startW, h: startH, ox: 0, oy: 0 };
+        // --- KUNCI KHUSUS TABEL DOKUMEN (Opsional) ---
+        // Jika ini adalah tabel dokumen asli (BOQ/OPM 1/OPM 2), hentikan agar tidak bisa diklik
+        if (activeTfKey && (activeTfKey.includes('boq') || activeTfKey.includes('tb6') || activeTfKey.includes('tb7'))) {
+            return; 
         }
-        
-        if (typeof imageTransforms[activeTfKey].w === 'string' || !imageTransforms[activeTfKey].w) {
-            imageTransforms[activeTfKey].w = startW;
-            imageTransforms[activeTfKey].h = startH;
-        } else {
-            startW = imageTransforms[activeTfKey].w;
-            startH = imageTransforms[activeTfKey].h;
+
+        // --- KUNCI RAHASIA: BEKUKAN KOTAK TABEL AGAR TIDAK MELAR ---
+        const parent = activeEl.parentElement;
+        if (parent) {
+            // Ambil ukuran asli kotak saat ini sebelum gambar ditarik
+            const rect = parent.getBoundingClientRect();
+            
+            // Paksakan kotaknya membeku di ukuran tersebut dan sembunyikan gambar yang meluber (overflow hidden)
+            if (!parent.dataset.locked) {
+                parent.style.width = rect.width + 'px';
+                parent.style.height = rect.height + 'px';
+                parent.style.maxWidth = rect.width + 'px';
+                parent.style.maxHeight = rect.height + 'px';
+                parent.style.overflow = 'hidden';
+                parent.style.position = 'relative';
+                parent.dataset.locked = 'true';
+            }
+            
+            // Lepaskan batasan gambar agar bebas dibesarkan melampaui kotaknya
+            activeEl.style.maxWidth = 'none';
+            activeEl.style.maxHeight = 'none';
+        }
+        // -------------------------------------------------------------
+
+        if (e.target.classList.contains('res-handle')) { 
+            isResizingImg = true; 
+            resizeDir = e.target.dataset.dir; 
+            startW = activeEl.offsetWidth;
+            startH = activeEl.offsetHeight;
+            
+            if (!imageTransforms[activeTfKey]) imageTransforms[activeTfKey] = { w: startW, h: startH, ox: 0, oy: 0 };
+            
+            if (typeof imageTransforms[activeTfKey].w === 'string' || !imageTransforms[activeTfKey].w) {
+                imageTransforms[activeTfKey].w = startW;
+                imageTransforms[activeTfKey].h = startH;
+            } else {
+                startW = imageTransforms[activeTfKey].w;
+                startH = imageTransforms[activeTfKey].h;
+            }
+        } 
+        else if (e.target.classList.contains('drag-area')) { 
+            isDraggingImgPreview = true; 
+            if(!imageTransforms[activeTfKey]) imageTransforms[activeTfKey] = { w: '100%', h: '100%', ox: 0, oy: 0 };
+            startOx = imageTransforms[activeTfKey].ox || 0;
+            startOy = imageTransforms[activeTfKey].oy || 0;
         }
         
         startX = e.clientX;
         startY = e.clientY;
         e.preventDefault(); 
     } 
-    // Handle klik di area tengah gambar (untuk geser/pan)
-    else if (e.target.classList.contains('drag-area')) { 
-        isDraggingImgPreview = true; 
-        activeEl = e.target.closest('.resizable-wrapper');
-        activeTfKey = activeEl.dataset.key;
-        
-        if(!imageTransforms[activeTfKey]) {
-            imageTransforms[activeTfKey] = { w: '100%', h: '100%', ox: 0, oy: 0 };
-        }
-        
-        startOx = imageTransforms[activeTfKey].ox || 0;
-        startOy = imageTransforms[activeTfKey].oy || 0;
-        startX = e.clientX; 
-        startY = e.clientY; 
-        e.preventDefault(); 
-    }
 });
 
 document.addEventListener('mousemove', (e) => { 
-    // Kalau sedang nge-CROP/RESIZE pinggirannya (seperti Word)
     if (isResizingImg && activeEl) {
         let dx = e.clientX - startX; 
         let dy = e.clientY - startY; 
@@ -1359,7 +1377,6 @@ document.addEventListener('mousemove', (e) => {
         activeEl.style.width = newW + 'px';
         activeEl.style.height = newH + 'px';
     } 
-    // Kalau sedang MENGGESER/PAN gambar (tarik tengahnya)
     else if (isDraggingImgPreview && activeEl) { 
         let dx = e.clientX - startX; 
         let dy = e.clientY - startY; 
@@ -1379,7 +1396,7 @@ window.addEventListener('mouseup', () => {
         isDraggingImgPreview = false; 
         isResizingImg = false;
         activeEl = null; 
-        triggerAutoSave(); 
+        if (typeof triggerAutoSave === 'function') triggerAutoSave(); 
     }
 });
 
