@@ -63,6 +63,9 @@ let duplicateCounts = {};
 
 let isSplitScreenActive = false;
 
+// Array untuk menyimpan halaman yang error dan akan dilewati saat di-print
+let emptyPagesToSkip = [];
+
 const pageTitles = [
     "Global", "Daftar Isi", "Laporan", "BOQ", "Ev Prog", "Tb OPM 1 (Lscp)", "Tb OPM 2 (Lscp)", 
     "OPM 1", "Ljt 1", "OPM 2", "Ljt 2", "OS-SM", "Lbl Kbl", "Patchcord", "PS ODC", 
@@ -410,6 +413,7 @@ function cetakNative() {
     document.getElementById('modal-export').classList.add('hidden');
     
     let errors = [];
+    emptyPagesToSkip = []; // Reset array saat validasi berjalan
 
     const checkTxt = (id, pageNum, fieldName) => {
         const el = document.getElementById(id);
@@ -529,6 +533,9 @@ function cetakNative() {
     });
 
     if(errors.length > 0) {
+        // Simpan daftar unik dari nomor halaman yang punya error
+        emptyPagesToSkip = [...new Set(errors.map(e => e.page))].sort((a, b) => a - b);
+
         const list = document.getElementById('warning-list');
         list.innerHTML = '';
         
@@ -558,9 +565,55 @@ function cetakNative() {
 
 function forcePrint() {
     document.getElementById('modal-warning').classList.add('hidden');
-    showToast("Mencetak dengan paksa (Bypass Validator).");
-    window.print();
+    
+    // Cek apakah ada halaman kosong/error yang harus dilewati
+    if (emptyPagesToSkip.length > 0) {
+        // Munculkan Pop up konfirmasi kedua dengan Checkbox
+        const skipListEl = document.getElementById('skip-page-list');
+        skipListEl.innerHTML = emptyPagesToSkip.map(p => `
+            <label class="flex items-center gap-3 p-2 bg-white rounded border border-orange-200 cursor-pointer hover:bg-orange-100 transition">
+                <input type="checkbox" value="${p}" class="skip-checkbox w-5 h-5 text-orange-600 focus:ring-orange-500 border-gray-300 rounded" checked>
+                <span class="font-bold text-sm text-slate-700">Sembunyikan / Lewati Hal ${p}</span>
+            </label>
+        `).join('');
+        
+        document.getElementById('modal-confirm-skip').classList.remove('hidden');
+    } else {
+        window.print();
+    }
 }
+
+// Eksekusi fungsi cetak setelah mengonfirmasi halaman kosong di-skip
+function executePrintWithSkip() {
+    document.getElementById('modal-confirm-skip').classList.add('hidden');
+    
+    // Ambil halaman mana saja yang dicentang untuk dilewati
+    const checkboxes = document.querySelectorAll('.skip-checkbox:checked');
+    const selectedToSkip = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+    // Tambahkan class CSS yang membuat elemen disembunyikan (hanya saat print)
+    selectedToSkip.forEach(pageNum => {
+        const pageEl = document.getElementById('preview-page-' + pageNum);
+        if(pageEl) pageEl.classList.add('skip-print-page');
+    });
+
+    showToast("🖨️ Menyiapkan dokumen PDF...", "success");
+    
+    // Beri sedikit jeda agar DOM diperbarui sebelum memanggil dialog print
+    setTimeout(() => {
+        window.print();
+        
+        // Catatan: Setelah PDF/Print ditutup, class 'skip-print-page' akan otomatis dihapus
+        // oleh event listener 'afterprint' di bawah ini.
+    }, 300);
+}
+
+// Mengembalikan halaman yang sebelumnya disembunyikan segera setelah dialog window.print() selesai atau ditutup.
+window.addEventListener('afterprint', () => {
+    document.querySelectorAll('.skip-print-page').forEach(el => {
+        el.classList.remove('skip-print-page');
+    });
+});
 
 function goToErrorPage(pageId) {
     document.getElementById('modal-warning').classList.add('hidden');
