@@ -116,6 +116,8 @@
                             <div class="grid grid-cols-3 gap-4 mb-3 items-center"><label class="text-sm font-bold">DISTRICT</label><input type="text" id="inp-district" oninput="updateReport()" class="col-span-2 border rounded p-2 focus:ring-2 focus:ring-red-500 outline-none uppercase transition" value="MATARAM"></div>
                             <div class="grid grid-cols-3 gap-4 mb-3 items-center"><label class="text-sm font-bold">LOKASI</label><input type="text" id="inp-lokasi" oninput="updateReport()" class="col-span-2 border rounded p-2 focus:ring-2 focus:ring-red-500 outline-none uppercase transition" value="DOMPU [3NTB-DMP-PT3-53b6170-MUSLIMIN]"></div>
                             <div class="grid grid-cols-3 gap-4 mb-3 items-center"><label class="text-sm font-bold">PELAKSANA</label><input type="text" id="inp-pelaksana" oninput="updateReport()" class="col-span-2 border rounded p-2 focus:ring-2 focus:ring-red-500 outline-none uppercase transition" value="PT. TELKOM AKSES"></div>
+                            <!-- PENAMBAHAN INPUT KEGIATAN -->
+                            <div class="grid grid-cols-3 gap-4 mb-3 items-center"><label class="text-sm font-bold">KEGIATAN</label><input type="text" id="inp-kegiatan" oninput="updateReport()" class="col-span-2 border rounded p-2 focus:ring-2 focus:ring-red-500 outline-none uppercase transition" value="COMMISSIONING TEST"></div>
                         </div>
 
                         <!-- HALAMAN 2 -->
@@ -177,7 +179,8 @@
                                 <input type="file" multiple accept="image/*" class="hidden">
                                 <button type="button" class="mt-3 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow hover:bg-red-700 transition">Pilih 6 Foto</button>
                             </div>
-                            <div id="ev-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+                            <!-- PERBAIKAN BUG ID: ev-inputs-container -> evidence-inputs-container -->
+                            <div id="evidence-inputs-container" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
                         </div>
 
                         <!-- HAL 6: TABEL OPM -->
